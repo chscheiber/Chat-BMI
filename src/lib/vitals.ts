@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals';
 
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
@@ -11,7 +12,7 @@ function getConnectionSpeed() {
  * @param {import("web-vitals").Metric} metric
  * @param {{ params: { [s: string]: any; } | ArrayLike<any>; path: string; analyticsId: string; debug: boolean; }} options
  */
-function sendToAnalytics(metric, options) {
+function sendToAnalytics(metric: any, options:any) {
 	const page = Object.entries(options.params).reduce(
 		(acc, [key, value]) => acc.replace(value, `[${key}]`),
 		options.path
@@ -49,7 +50,7 @@ function sendToAnalytics(metric, options) {
 /**
  * @param {any} options
  */
-export function webVitals(options) {
+export function webVitals(options: any) {
 	try {
 		console.log(`[Web Vitals] for page ${options.path}`);
 		onFID((metric) => sendToAnalytics(metric, options));
