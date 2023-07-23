@@ -47,6 +47,7 @@
 	"type": "module",
 	"dependencies": {
 		"@mirohq/miro-api": "^2.0.0",
-		"@supabase/supabase-js": "^2.26.0"
+		"@supabase/supabase-js": "^2.26.0",
+		"langchain": "^0.0.114"
 	}
 }

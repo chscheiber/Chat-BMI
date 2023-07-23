@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-
 	export let data;
 
 	if (browser) {
@@ -13,20 +12,14 @@
 			});
 		});
 	}
-
-	const runPrompt = async (index: number) => {
-		alert(data.prompts[index].name);
-	};
 </script>
 
-{#each data.prompts as prompt, i}
-	<div class="flex flex-col pb-3">
-		<h1>{prompt.name}</h1>
-		<span>{prompt.signifier}</span>
-		<div>
-			<button type="button" class="btn variant-filled" on:click={() => runPrompt(i)}
-				>Run Prompt</button
-			>
+<div class="flex flex-col overflow-y-scroll max-h-[98vh]">
+	{#each data.promptTypes as promptType}
+		<div class="mb-2 pb-2 border-b-2 border-b-black">
+			<h2 class="h2">{promptType.name}s</h2>
+			<p class="italic">{promptType.description}</p>
+			<a class="btn variant-filled mt-2" href={`miro/${promptType.type}`}>See Prompts</a>
 		</div>
-	</div>
-{/each}
+	{/each}
+</div>

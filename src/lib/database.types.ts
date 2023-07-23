@@ -32,19 +32,25 @@ export interface Database {
       }
       prompt_types: {
         Row: {
+          description: string
           id: number
-          signifier: string | null
-          type: string | null
+          name: string
+          signifier: string
+          type: string
         }
         Insert: {
+          description: string
           id?: number
-          signifier?: string | null
-          type?: string | null
+          name: string
+          signifier: string
+          type: string
         }
         Update: {
+          description?: string
           id?: number
-          signifier?: string | null
-          type?: string | null
+          name?: string
+          signifier?: string
+          type?: string
         }
         Relationships: []
       }
@@ -82,14 +88,7 @@ export interface Database {
           signifier?: string | null
           type?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "prompts_type_fkey"
-            columns: ["type"]
-            referencedRelation: "prompt_types"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Views: {
