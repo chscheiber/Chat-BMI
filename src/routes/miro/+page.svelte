@@ -16,10 +16,10 @@
 
 <div class="flex flex-col overflow-y-scroll max-h-[98vh]">
 	{#each data.promptTypes as promptType}
-		<div class="mb-2 pb-2 border-b-2 border-b-black">
+		<div class="mb-3 pb-3 border-b-[1px] border-b-black">
 			<h2 class="h2">{promptType.name}s</h2>
-			<p class="italic">{promptType.description}</p>
-			<a class="btn variant-filled mt-2" href={`miro/${promptType.type}`}>See Prompts</a>
+			<p class="italic text-sm">{promptType.description}</p>
+			<a class="btn btn-sm variant-filled mt-3" href={`miro/${promptType.type}`}>See Prompts</a>
 		</div>
 	{/each}
 </div>
