@@ -10,10 +10,6 @@ import {
 import { LLMChain } from 'langchain/chains';
 import { OPENAI_API_KEY } from '$env/static/private';
 
-export const GET: RequestHandler = async () => {
-	return new Response();
-};
-
 export const POST: RequestHandler = async ({ request }) => {
 	const data = await request.json();
 	const prompt: ResolvedPrompt = data.prompt;
@@ -23,7 +19,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		return new Response('No OpenAI API key provided', { status: 400 });
 	}
 
-	const chat = new ChatOpenAI({ modelName: 'gpt-4', temperature: 0, openAIApiKey: OPENAI_API_KEY });
+	const chat = new ChatOpenAI({
+		modelName: 'gpt-3.5-turbo',
+		temperature: 0,
+		openAIApiKey: OPENAI_API_KEY
+	});
 	const systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(
 		prompt.prompt_types.signifier
 	);

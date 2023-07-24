@@ -6,13 +6,12 @@ function createPrompts() {
 
 	return {
 		subscribe,
-		// latest: derived(subscribe, ($prompt) => $prompt[$prompt.length - 1]),
 		play: (prompt: Prompt) => update((prompts) => [...prompts, prompt]),
 		reset: () => set([])
 	};
 }
 
 export const executedPrompts = createPrompts();
-export const latestPrompt = derived(executedPrompts, ($prompt) => $prompt[$prompt.length - 1]);
-
-export const heading = writable<string>('');
+export const latestPrompt = derived(executedPrompts, ($prompt) =>
+	$prompt.length > 0 ? $prompt[$prompt.length - 1] : null
+);

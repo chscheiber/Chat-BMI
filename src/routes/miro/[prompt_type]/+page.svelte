@@ -13,19 +13,22 @@
 </div>
 
 {#if data.prompts.length > 0}
+	<h4 class="h4 mb-2">Prompts:</h4>
 	{#each data.prompts as prompt, i}
-		<div class="flex items-center mb-4">
-			<button
-				type="button"
-				class="btn-icon btn-icon-sm variant-filled me-2"
-				on:click={() => {
-					executedPrompts.play(prompt);
-					goto('chat', { state: { lastPage: data.selectedPromptType?.type } });
-				}}><Icon icon="ion:play" /></button
-			>
+		<div class="flex items-center justify-between border-b-[1px] border-b-slate-400 mb-3 pb-3">
 			<div class="flex flex-col">
 				<h3 class="h3">{prompt.name}</h3>
 				<span class="text-sm">{prompt.signifier}</span>
+			</div>
+			<div>
+				<button
+					type="button"
+					class="btn-icon btn-icon-sm variant-filled me-2"
+					on:click={() => {
+						executedPrompts.play(prompt);
+						goto('chat', { state: { lastPage: data.selectedPromptType?.type } });
+					}}><Icon icon="ion:arrow-back" rotate={2} /></button
+				>
 			</div>
 		</div>
 	{/each}

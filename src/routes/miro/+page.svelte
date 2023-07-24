@@ -14,7 +14,7 @@
 	}
 </script>
 
-<div class="flex flex-col overflow-y-scroll max-h-[98vh]">
+<div class="flex flex-col">
 	{#each data.promptTypes as promptType}
 		<div class="mb-3 pb-3 border-b-[1px] border-b-black">
 			<h2 class="h2">{promptType.name}s</h2>

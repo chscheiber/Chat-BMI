@@ -35,6 +35,7 @@ export interface Database {
           description: string
           id: number
           name: string
+          order: number
           signifier: string
           type: string
         }
@@ -42,6 +43,7 @@ export interface Database {
           description: string
           id?: number
           name: string
+          order: number
           signifier: string
           type: string
         }
@@ -49,6 +51,7 @@ export interface Database {
           description?: string
           id?: number
           name?: string
+          order?: number
           signifier?: string
           type?: string
         }
@@ -58,37 +61,47 @@ export interface Database {
         Row: {
           created_at: string | null
           db_queries: Json | null
+          description: string | null
           generation_directives: Json | null
           id: number
           memetic_proxies: Json | null
-          name: string | null
+          name: string
           output_format: Json | null
-          signifier: string | null
-          type: number | null
+          signifier: string
+          type: number
         }
         Insert: {
           created_at?: string | null
           db_queries?: Json | null
+          description?: string | null
           generation_directives?: Json | null
           id?: number
           memetic_proxies?: Json | null
-          name?: string | null
+          name: string
           output_format?: Json | null
-          signifier?: string | null
-          type?: number | null
+          signifier: string
+          type: number
         }
         Update: {
           created_at?: string | null
           db_queries?: Json | null
+          description?: string | null
           generation_directives?: Json | null
           id?: number
           memetic_proxies?: Json | null
-          name?: string | null
+          name?: string
           output_format?: Json | null
-          signifier?: string | null
-          type?: number | null
+          signifier?: string
+          type?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "prompts_type_fkey"
+            columns: ["type"]
+            referencedRelation: "prompt_types"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
