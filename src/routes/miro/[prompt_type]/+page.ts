@@ -11,8 +11,8 @@ export const load = (async ({ parent, params }) => {
 	const selectedPromptType = promptTypes.find((pt) => pt.type === params.prompt_type);
 
 	const { data } = await supabase
-		.from('prompts')
-		.select('*,prompt_types (*)')
+		.from('user_prompts')
+		.select('*, prompt_types (*)')
 		.eq('type', selectedPromptType?.id);
 	return { selectedPromptType, prompts: data ?? [] };
 }) satisfies PageLoad;

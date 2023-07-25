@@ -30,6 +30,85 @@ export interface Database {
         }
         Relationships: []
       }
+      prompt_element_categories: {
+        Row: {
+          id: number
+          key: string
+          name: string
+        }
+        Insert: {
+          id?: number
+          key: string
+          name: string
+        }
+        Update: {
+          id?: number
+          key?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      prompt_element_input_types: {
+        Row: {
+          key: string
+          name: string
+        }
+        Insert: {
+          key: string
+          name: string
+        }
+        Update: {
+          key?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      prompt_elements: {
+        Row: {
+          category: number
+          description: string | null
+          id: number
+          input_type: string | null
+          key: string
+          multiple: boolean
+          name: string
+          signifier: string | null
+        }
+        Insert: {
+          category: number
+          description?: string | null
+          id?: number
+          input_type?: string | null
+          key: string
+          multiple?: boolean
+          name: string
+          signifier?: string | null
+        }
+        Update: {
+          category?: number
+          description?: string | null
+          id?: number
+          input_type?: string | null
+          key?: string
+          multiple?: boolean
+          name?: string
+          signifier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_elements_category_fkey"
+            columns: ["category"]
+            referencedRelation: "prompt_element_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_elements_input_type_fkey"
+            columns: ["input_type"]
+            referencedRelation: "prompt_element_input_types"
+            referencedColumns: ["key"]
+          }
+        ]
+      }
       prompt_types: {
         Row: {
           description: string
@@ -56,6 +135,37 @@ export interface Database {
           type?: string
         }
         Relationships: []
+      }
+      prompt_types_elements: {
+        Row: {
+          prompt_element: number
+          prompt_type: number
+          required: boolean
+        }
+        Insert: {
+          prompt_element: number
+          prompt_type: number
+          required?: boolean
+        }
+        Update: {
+          prompt_element?: number
+          prompt_type?: number
+          required?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_types_elements_prompt_element_fkey"
+            columns: ["prompt_element"]
+            referencedRelation: "prompt_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_types_elements_prompt_type_fkey"
+            columns: ["prompt_type"]
+            referencedRelation: "prompt_types"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       prompts: {
         Row: {
@@ -103,9 +213,113 @@ export interface Database {
           }
         ]
       }
+      user_prompt_elements: {
+        Row: {
+          element: number
+          prompt: number
+          value: string | null
+        }
+        Insert: {
+          element: number
+          prompt: number
+          value?: string | null
+        }
+        Update: {
+          element?: number
+          prompt?: number
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_prompt_elements_element_fkey"
+            columns: ["element"]
+            referencedRelation: "prompt_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_prompt_elements_prompt_fkey"
+            columns: ["prompt"]
+            referencedRelation: "user_prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_prompt_elements_prompt_fkey"
+            columns: ["prompt"]
+            referencedRelation: "user_prompt_elements_view"
+            referencedColumns: ["prompt_id"]
+          }
+        ]
+      }
+      user_prompts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          name: string
+          rating: number
+          type: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          name: string
+          rating?: number
+          type: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          name?: string
+          rating?: number
+          type?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_prompts_type_fkey"
+            columns: ["type"]
+            referencedRelation: "prompt_types"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      prompt_elements_view: {
+        Row: {
+          input_type: string | null
+          key: string | null
+          name: string | null
+          pe_name: string | null
+          type: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_elements_input_type_fkey"
+            columns: ["input_type"]
+            referencedRelation: "prompt_element_input_types"
+            referencedColumns: ["key"]
+          }
+        ]
+      }
+      user_prompt_elements_view: {
+        Row: {
+          element_key: string | null
+          element_name: string | null
+          input_type: string | null
+          prompt_id: number | null
+          value: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_elements_input_type_fkey"
+            columns: ["input_type"]
+            referencedRelation: "prompt_element_input_types"
+            referencedColumns: ["key"]
+          }
+        ]
+      }
     }
     Functions: {
       ivfflathandler: {

@@ -1,5 +1,5 @@
 import type { Database } from '$lib/database.types';
-export type Prompt = Database['public']['Tables']['prompts']['Row'];
+export type Prompt = Database['public']['Tables']['user_prompts']['Row'];
 export type PromptType = Database['public']['Tables']['prompt_types']['Row'];
 export type ResolvedPrompt = Prompt & { prompt_types: PromptType };
 // export abstract class Prompt {
