@@ -9,7 +9,7 @@
 	import '../app.postcss';
 </script>
 
-<div class="app-body h-[96vh] overflow-y-auto flex flex-col">
+<div class="app-body h-[96vh] overflow-y-auto flex flex-col pr-2">
 	<slot />
 </div>
 

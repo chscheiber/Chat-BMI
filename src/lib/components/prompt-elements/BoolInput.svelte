@@ -3,6 +3,7 @@
 
 	export let element: BoolElement = {
 		element_name: 'Input',
+		element_key: 'none',
 		value: ''
 	};
 </script>
