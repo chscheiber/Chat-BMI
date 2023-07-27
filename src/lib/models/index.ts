@@ -1,1 +1,1 @@
-export * from './prompt.model';
+export * from './prompts';

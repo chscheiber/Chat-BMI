@@ -6,14 +6,27 @@
 	export let data: PageData;
 </script>
 
-<div class="flex flex-col mb-6">
-	<BackNav heading={data.selectedPromptType?.name} />
-	<span class="text-sm">{data.selectedPromptType?.description}</span>
+<div class="flex flex-col">
+	<BackNav heading={data.promptType.name} />
+	<span class="text-sm">{data.promptType.description}</span>
+</div>
+
+<div class="flex gap-x-2 mt-8 mb-8 items-center">
+	<button
+		type="button"
+		class="btn-icon btn-icon-sm variant-filled me-2"
+		on:click={() => {
+			goto(`/miro/${data.promptType.key}/new/preview`, {
+				state: { lastPage: data.promptType.key }
+			});
+		}}><Icon icon="ion:plus" /></button
+	>
+	<h4 class="h4">Create new {data.promptType.name}</h4>
 </div>
 
 {#if data.prompts.length > 0}
-	<h4 class="h4 mb-2">Prompts:</h4>
-	{#each data.prompts as prompt, i}
+	<h4 class="h4 mb-2">Saved Prompts</h4>
+	{#each data.prompts as prompt}
 		<div class="flex items-center justify-between border-b-[1px] border-b-slate-400 mb-3 pb-3">
 			<div class="flex flex-col">
 				<h3 class="h3">{prompt.name}</h3>
@@ -26,8 +39,8 @@
 					type="button"
 					class="btn-icon btn-icon-sm variant-filled me-2"
 					on:click={() => {
-						goto(`/miro/${prompt.prompt_types?.type}/${prompt.id}/preview`, {
-							state: { lastPage: data.selectedPromptType?.type }
+						goto(`/miro/${data.promptType.key}/${prompt.promptId}/preview`, {
+							state: { lastPage: data.promptType.key }
 						});
 					}}><Icon icon="ion:arrow-back" rotate={2} /></button
 				>

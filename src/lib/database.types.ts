@@ -9,6 +9,52 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      ARCHIVED_prompts: {
+        Row: {
+          created_at: string | null
+          db_queries: Json | null
+          description: string | null
+          generation_directives: Json | null
+          id: number
+          memetic_proxies: Json | null
+          name: string
+          output_format: Json | null
+          signifier: string
+          type: number
+        }
+        Insert: {
+          created_at?: string | null
+          db_queries?: Json | null
+          description?: string | null
+          generation_directives?: Json | null
+          id?: number
+          memetic_proxies?: Json | null
+          name: string
+          output_format?: Json | null
+          signifier: string
+          type: number
+        }
+        Update: {
+          created_at?: string | null
+          db_queries?: Json | null
+          description?: string | null
+          generation_directives?: Json | null
+          id?: number
+          memetic_proxies?: Json | null
+          name?: string
+          output_format?: Json | null
+          signifier?: string
+          type?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ARCHIVED_prompts_type_fkey"
+            columns: ["type"]
+            referencedRelation: "prompt_types"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       documents: {
         Row: {
           content: string | null
@@ -27,6 +73,24 @@ export interface Database {
           embedding?: string | null
           id?: number
           metadata?: Json | null
+        }
+        Relationships: []
+      }
+      personas: {
+        Row: {
+          id: number
+          name: string | null
+          value: string
+        }
+        Insert: {
+          id?: number
+          name?: string | null
+          value: string
+        }
+        Update: {
+          id?: number
+          name?: string | null
+          value?: string
         }
         Relationships: []
       }
@@ -170,48 +234,75 @@ export interface Database {
       prompts: {
         Row: {
           created_at: string | null
-          db_queries: Json | null
           description: string | null
-          generation_directives: Json | null
+          elements: Json
           id: number
-          memetic_proxies: Json | null
+          llm_model_name: string | null
           name: string
-          output_format: Json | null
+          output_format: string | null
+          persona_id: number | null
+          scenario_id: number | null
           signifier: string
-          type: number
+          type: string
         }
         Insert: {
           created_at?: string | null
-          db_queries?: Json | null
           description?: string | null
-          generation_directives?: Json | null
+          elements: Json
           id?: number
-          memetic_proxies?: Json | null
+          llm_model_name?: string | null
           name: string
-          output_format?: Json | null
+          output_format?: string | null
+          persona_id?: number | null
+          scenario_id?: number | null
           signifier: string
-          type: number
+          type: string
         }
         Update: {
           created_at?: string | null
-          db_queries?: Json | null
           description?: string | null
-          generation_directives?: Json | null
+          elements?: Json
           id?: number
-          memetic_proxies?: Json | null
+          llm_model_name?: string | null
           name?: string
-          output_format?: Json | null
+          output_format?: string | null
+          persona_id?: number | null
+          scenario_id?: number | null
           signifier?: string
-          type?: number
+          type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "prompts_type_fkey"
-            columns: ["type"]
-            referencedRelation: "prompt_types"
+            foreignKeyName: "prompts_persona_id_fkey"
+            columns: ["persona_id"]
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompts_scenario_id_fkey"
+            columns: ["scenario_id"]
+            referencedRelation: "scenarios"
             referencedColumns: ["id"]
           }
         ]
+      }
+      scenarios: {
+        Row: {
+          id: number
+          name: string | null
+          value: string
+        }
+        Insert: {
+          id?: number
+          name?: string | null
+          value: string
+        }
+        Update: {
+          id?: number
+          name?: string | null
+          value?: string
+        }
+        Relationships: []
       }
       user_prompt_elements: {
         Row: {

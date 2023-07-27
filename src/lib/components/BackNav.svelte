@@ -8,5 +8,5 @@
 	<a class="btn-icon btn-icon-sm variant-filled me-2" href={lastPage}
 		><Icon icon="ion:arrow-back" /></a
 	>
-	<h2 class="h2 mb-0 pb-0">{heading}</h2>
+	<h2 class="h2 mb-0 pb-0">{heading === '' ? 'New Prompt' : heading}</h2>
 </div>
