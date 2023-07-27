@@ -5,4 +5,6 @@
 	export let checked: boolean = false;
 </script>
 
-<SlideToggle name="slider-label" bind:checked>{label}</SlideToggle>
+<div class="flex">
+	<SlideToggle name="slider-label" bind:checked>{label}</SlideToggle>
+</div>

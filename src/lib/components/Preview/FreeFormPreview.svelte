@@ -15,9 +15,6 @@
 />
 
 <div class="flex flex-col gap-y-4">
-	<BooleanInput
-		bind:checked={freeFormPrompt.referencing}
-		label="Include references for generating the output"
-	/>
+	<BooleanInput bind:checked={freeFormPrompt.referencing} label="Include references" />
 	<BooleanInput bind:checked={freeFormPrompt.reasoning} label="Let the model add reasoning" />
 </div>
