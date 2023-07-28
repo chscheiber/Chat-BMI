@@ -1,4 +1,5 @@
 import type { PromptData, PromptType } from './prompt.types';
+import { PUBLIC_DEFAULT_LLM_MODEL } from '$env/static/public';
 
 export abstract class Prompt {
 	public promptId: number;
@@ -8,7 +9,7 @@ export abstract class Prompt {
 	public description?: string;
 	public signifier: string;
 	public outputFormat?: string;
-	public llmModelName = 'gpt-3.5-turbo';
+	public llmModelName = PUBLIC_DEFAULT_LLM_MODEL;
 	public context: string | null = null;
 	public abstract readonly type: PromptType;
 
