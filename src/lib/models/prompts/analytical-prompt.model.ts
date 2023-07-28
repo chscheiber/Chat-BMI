@@ -3,7 +3,6 @@ import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.
 
 export class AnalyticalPrompt extends Prompt {
 	public readonly type = ANALYTICAL_PROMPT_TYPE;
-	public context?: string;
 	public dbQueries?: string[];
 	public referencing = true;
 

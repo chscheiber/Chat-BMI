@@ -1,29 +1,29 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { Prompt } from '$lib';
+	import { MiroContext } from '$lib';
+	import type { Prompt } from '$lib/models/prompts';
 
+	let context: MiroContext;
 	if (browser) {
-		(window as any).miro.board.ui.on(
-			'selection:update',
-			async (event: any) => (selection = event.items)
-		);
+		(window as any).miro.board
+			.getSelection()
+			.then((items: any) => (context = new MiroContext(items)));
+
+		(window as any).miro.board.ui.on('selection:update', async (event: any) => {
+			context = new MiroContext(event.items);
+		});
 	}
 
+	$: if (context)
+		context.miroContent.then((content) => {
+			prompt.context = content;
+		});
 	export let prompt: Prompt;
-	console.log(prompt);
-
-	let selection: any[] = [];
-	$: stickyNotes = selection.filter((item) => item.type === 'sticky_note');
-	// $: frames = selection.filter((item) => item.type === 'frame');
-	// $: frameContent = frames[0]?.getChildren() ?? [];
 </script>
 
-{#if stickyNotes.length > 0}
+{#if prompt.context}
 	<p class="whitespace-pre-line">
-		{stickyNotes
-			.map((note) => note.content.replace('<p>', '').replace('</p>', ''))
-			.filter((item) => item !== '')
-			.join('\n')}
+		{prompt.context}
 	</p>
 {:else}
 	<h5 class="h5">No items selected.</h5>

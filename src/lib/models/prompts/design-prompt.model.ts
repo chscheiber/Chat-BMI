@@ -3,7 +3,6 @@ import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.
 
 export class DesignPrompt extends Prompt {
 	public type = DESIGN_PROMPT_TYPE;
-	public context?: string;
 	public dbQueries?: string[];
 	public scenario?: string;
 	public persona?: string;
@@ -23,8 +22,7 @@ export const DESIGN_PROMPT_TYPE: PromptType = {
 	key: 'design',
 	contextSelectable: true,
 	dbQueriesSelectable: true,
-	description: `The design prompt encourages experimental and visual thinking, interaction with ideas, and requires reasoning for assessing design alternatives.
-        The constraints and requirements of the design must be well-understood, so contextual knowledge is necessary`,
+	description: `The design prompt encourages experimental and visual thinking, interaction with ideas, and requires reasoning for assessing design alternatives.`,
 	typeSignifier: `You are DesignGPT, a creative and visual thinker that helps with designing novel solutions in the space of Business Model Innovation. 
 
         Generate output that satisfies the following quality metrics:

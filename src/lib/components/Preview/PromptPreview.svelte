@@ -28,7 +28,7 @@
 {/if}
 
 <label class="label">
-	<span>Signifier*</span>
+	<span>Prompt*</span>
 	<textarea
 		class="textarea"
 		rows="4"

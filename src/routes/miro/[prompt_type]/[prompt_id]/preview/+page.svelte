@@ -38,7 +38,7 @@
 	{:else}
 		<Stepper buttonCompleteLabel="Run Prompt" on:complete={complete}>
 			<Step>
-				<svelte:fragment slot="header">Preview Prompt</svelte:fragment>
+				<svelte:fragment slot="header">{prompt.type.name}</svelte:fragment>
 				<PromptPreview bind:prompt />
 			</Step>
 			{#if prompt.type.dbQueriesSelectable && false}
@@ -51,7 +51,7 @@
 			{#if prompt.type.contextSelectable}
 				<Step>
 					<svelte:fragment slot="header">Select Context</svelte:fragment>
-					<Context {prompt} />
+					<Context bind:prompt />
 				</Step>
 			{/if}
 		</Stepper>

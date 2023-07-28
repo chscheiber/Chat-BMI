@@ -3,7 +3,6 @@ import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.
 
 export class FreeFormPrompt extends Prompt {
 	public type = FREE_FORM_PROMPT_TYPE;
-	public context?: string;
 	public dbQueries?: string[];
 	public reasoning?: boolean;
 	public referencing?: boolean;

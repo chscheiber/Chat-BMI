@@ -3,7 +3,6 @@ import type { PromptType } from './prompt.types';
 
 export class BrainstormingPrompt extends Prompt {
 	public type = BRAINSTORMING_PROMPT_TYPE;
-	public context?: string;
 	public scenario?: string;
 	public persona?: string;
 }
