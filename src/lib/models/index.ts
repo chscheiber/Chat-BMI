@@ -1,1 +1,2 @@
-export * from './prompt.model';
+export * from './prompts';
+export * from './miro-context.model';

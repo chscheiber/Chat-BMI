@@ -1,18 +1,26 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { supabase } from '$lib/supabase';
+import { PROMPT_TYPES, Prompt, PromptFactory } from '$lib';
 
-export const load = (async ({ parent, params }) => {
-	const { promptTypes } = await parent();
-	const allowedPromptTypes = promptTypes.map((pt) => pt.type);
+export const load = (async ({ params }) => {
+	const promptType = PROMPT_TYPES.find((type) => type.key === params.prompt_type);
 
-	if (!allowedPromptTypes.includes(params.prompt_type)) throw error(404);
+	if (!promptType) throw error(404);
 
-	const selectedPromptType = promptTypes.find((pt) => pt.type === params.prompt_type);
-
-	const { data } = await supabase
+	const { data, error: err } = await supabase
 		.from('prompts')
-		.select('*,prompt_types (*)')
-		.eq('type', selectedPromptType?.id);
-	return { selectedPromptType, prompts: data ?? [] };
+		.select('*, scenario:scenarios(*), persona:personas(*)')
+		.eq('type', promptType.key);
+
+	if (err) throw error(404);
+
+	const prompts: Prompt[] = [];
+	if (!data) return { promptType, prompts };
+
+	for (const promptData of data) {
+		prompts.push(PromptFactory.createPrompt(promptType.key, promptData));
+	}
+
+	return { promptType, prompts };
 }) satisfies PageLoad;

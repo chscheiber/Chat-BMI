@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	export let data;
+	import { PROMPT_TYPES } from '$lib';
 
 	if (browser) {
 		const miro = (window as any).miro;
@@ -15,11 +15,11 @@
 </script>
 
 <div class="flex flex-col">
-	{#each data.promptTypes as promptType}
+	{#each PROMPT_TYPES as promptType}
 		<div class="mb-3 pb-3 border-b-[1px] border-b-black">
 			<h2 class="h2">{promptType.name}s</h2>
 			<p class="italic text-sm">{promptType.description}</p>
-			<a class="btn btn-sm variant-filled mt-3" href={`miro/${promptType.type}`}>See Prompts</a>
+			<a class="btn btn-sm variant-filled mt-3" href={`miro/${promptType.key}`}>See Prompts</a>
 		</div>
 	{/each}
 </div>
