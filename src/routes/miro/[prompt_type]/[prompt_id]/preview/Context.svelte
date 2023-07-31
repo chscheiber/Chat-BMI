@@ -3,25 +3,22 @@
 	import { MiroContext } from '$lib';
 	import type { Prompt } from '$lib/models/prompts';
 
-	let context: MiroContext;
+	const context: MiroContext = new MiroContext();
+	let contextString = '';
 	if (browser) {
-		(window as any).miro.board
-			.getSelection()
-			.then((items: any) => (context = new MiroContext(items)));
+		(window as any).miro.board.getSelection().then(async (items: any) => {
+			contextString = await context.updateItems(items);
+		});
 
 		(window as any).miro.board.ui.on('selection:update', async (event: any) => {
-			context = new MiroContext(event.items);
+			contextString = await context.updateItems(event?.items);
 		});
 	}
-
-	$: if (context)
-		context.miroContent.then((content) => {
-			prompt.context = content;
-		});
+	$: prompt.context = contextString;
 	export let prompt: Prompt;
 </script>
 
-{#if prompt.context}
+{#if prompt.context !== ''}
 	<p class="whitespace-pre-line">
 		{prompt.context}
 	</p>
