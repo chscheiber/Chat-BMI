@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BackNav from '$lib/components/BackNav.svelte';
-	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
 	import { PromptFactory, type Prompt } from '$lib/models/prompts';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
 	import { currentPrompts } from '../../../../../store';
 	import type { PageData } from './$types';
 	import Context from './Context.svelte';
+	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
 
 	export let data: PageData;
 	export let prompt: Prompt = data.prompt ?? PromptFactory.createPrompt(data.params.prompt_type);

@@ -1,2 +1,2 @@
-export { default as Chat } from './Chat/Chat.svelte';
-export * from './';
+export * from './BackNav.svelte';
+export * from './Chat.svelte';

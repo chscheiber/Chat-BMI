@@ -1,7 +1,33 @@
 <script lang="ts">
-	import { Avatar } from '@skeletonlabs/skeleton';
+	import type { Prompt } from '$lib/models';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
+	import { readablestreamStore } from '$lib/readable-stream.store';
+	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 
-	export let promptResponse = 'Lorem Ipsum';
+	export let prompt: Prompt;
+	const conversation = new Conversation(prompt);
+
+	const response = readablestreamStore();
+	let reply = '';
+	const runPrompt = async () => {
+		if (!prompt) return;
+		const answer = response.request(
+			new Request(`/miro/${prompt.type.key}/${prompt.promptId}/preview`, {
+				method: 'POST',
+				body: JSON.stringify(prompt),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+		);
+
+		reply = (await answer) ?? '';
+		conversation.addMessage(reply, 'system');
+	};
+
+	onMount(() => runPrompt());
+
 	let currentMessage = '';
 </script>
 
@@ -15,7 +41,22 @@
 			<p class="font-bold">ChatGPT</p>
 			<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 		</header>
-		<p class="whitespace-pre-line text-sm">{promptResponse}</p>
+		<p class="whitespace-pre-line text-sm">
+			{#if $response.loading && $response.text === ''}
+				<ProgressRadial width={'w-10'} stroke={100} />
+			{:else if $response.loading}
+				{$response.text}
+			{:else}
+				{reply}
+			{/if}
+		</p>
+		<!-- {#if reply}
+			<div class="flex justify-end pb-0">
+				<button class="btn-icon btn-icon-sm variant-filled" use:clipboard={reply}
+					><Icon icon="ion:copy-outline" /></button
+				>
+			</div>
+		{/if} -->
 	</div>
 </div>
 <!-- <div class="grid grid-cols-[1fr_auto] gap-2">
