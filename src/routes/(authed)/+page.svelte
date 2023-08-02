@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import type { SubmitFunction } from '@sveltejs/kit';
@@ -6,6 +7,17 @@
 	export let form;
 	export let data;
 	let loading = false;
+
+	if (browser) {
+		const miro = (window as any).miro;
+
+		miro.board.ui.on('icon:click', async () => {
+			await miro.board.ui.openPanel({
+				// The content displayed on the panel is fetched from the specified HTML resource
+				url: '/miro'
+			});
+		});
+	}
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
@@ -18,17 +30,17 @@
 
 <section class="columns mt-6 pt-6">
 	<div class="column is-half is-offset-one-quarter">
-		<form class="mb-6" action="/?/signin-with-oauth" method="post" use:enhance={handleSubmit}>
+		<!-- <form class="mb-6" action="/?/signin-with-oauth" method="post" use:enhance={handleSubmit}>
 			<button class="button" name="provider" value="github" type="submit">GitHub</button>
 			<button class="button" name="provider" value="google" type="submit">Google</button>
-		</form>
+		</form> -->
 
 		<h1 class="title">Sign in</h1>
-		{#if form?.error}
+		<!-- {#if form?.error}
 			<div class="block notification is-danger">{form.error}</div>
-		{/if}
+		{/if} -->
 
-		{#if $page.url.searchParams.get('auth-type') === 'magiclink'}
+		<!-- {#if $page.url.searchParams.get('auth-type') === 'magiclink'}
 			<form action="/?/create-magiclink" method="post" use:enhance={handleSubmit}>
 				<div class="field">
 					<label for="email" class="label">Email</label>
@@ -56,51 +68,52 @@
 					<a href="/">Sign in with email and password</a>
 				</p>
 			</div>
-		{:else}
-			<!-- else content -->
-			<form action="/?/signin-with-password" method="post" use:enhance={handleSubmit}>
-				<div class="field">
-					<label for="email" class="label">Email</label>
-					<p class="control">
-						<input
-							id="email"
-							name="email"
-							value={form?.values?.email ?? ''}
-							class="input"
-							type="email"
-							placeholder="Email"
-							required
-						/>
-					</p>
-				</div>
-				<div class="field">
-					<label for="password" class="label">Password</label>
-					<p class="control">
-						<input
-							id="password"
-							name="password"
-							class="input"
-							type="password"
-							placeholder="Password"
-							required
-						/>
-					</p>
-				</div>
-				<div class="field">
-					<p class="control">
-						<button disabled={loading} class="button is-fullwidth is-link">Sign in</button>
-					</p>
-				</div>
-			</form>
+		{:else} -->
+		<!-- else content -->
+		<form action="/?/signin-with-password" method="post" use:enhance={handleSubmit}>
+			<div class="field">
+				<label for="email" class="label">Email</label>
+				<p class="control">
+					<input
+						id="email"
+						name="email"
+						value={form?.values?.email ?? ''}
+						class="input"
+						type="email"
+						placeholder="Email"
+						required
+					/>
+				</p>
+			</div>
+			<div class="field">
+				<label for="password" class="label">Password</label>
+				<p class="control">
+					<input
+						id="password"
+						name="password"
+						class="input"
+						type="password"
+						placeholder="Password"
+						required
+					/>
+				</p>
+			</div>
+			<div class="field">
+				<p class="control">
+					<button disabled={loading} class="btn variant-filled is-fullwidth is-link">Sign in</button
+					>
+				</p>
+			</div>
+		</form>
 
-			<div class="mt-6">
+		<!-- <div class="mt-6">
 				<p class="has-text-centered">
 					Sign in with <a href="?auth-type=magiclink">magiclink</a>
 				</p>
 				<p class="has-text-centered">
 					Don't have an account? <a href="/signup">Sign up</a>
 				</p>
-			</div>
-		{/if}
+			</div> -->
+		<!-- {/if} -->
 	</div>
 </section>

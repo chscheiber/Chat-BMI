@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { MiroContext, type Prompt } from '$lib';
 	import BackNav from '$lib/components/BackNav.svelte';
-	import { currentPrompts } from '../../../store';
+	import { currentPrompts } from '../../../../store';
 	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
 	export let data: PageData;

@@ -3,10 +3,10 @@
 	import BackNav from '$lib/components/BackNav.svelte';
 	import { PromptFactory, type Prompt } from '$lib/models/prompts';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
-	import { currentPrompts } from '../../../../../store';
 	import type { PageData } from './$types';
 	import Context from './Context.svelte';
 	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
+	import { currentPrompts } from '../../../../../../store';
 
 	export let data: PageData;
 	export let prompt: Prompt = data.prompt ?? PromptFactory.createPrompt(data.params.prompt_type);

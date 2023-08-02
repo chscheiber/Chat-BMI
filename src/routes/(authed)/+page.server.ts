@@ -2,7 +2,61 @@ import { AuthApiError, type Provider } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {
-	'signin-with-password': async ({ request, locals: { supabase } }) => {
+	// default: async ({ request, locals: { supabase } }) => {
+	// 	const formData = await request.formData();
+
+	// 	const email = formData.get('email')?.toString();
+	// 	const password = formData.get('password')?.toString();
+
+	// 	if (!email) {
+	// 		return fail(400, {
+	// 			signinWithPassword: {
+	// 				error: 'Please enter your email',
+	// 				values: {
+	// 					email
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+
+	// 	if (!password) {
+	// 		return fail(400, {
+	// 			signinWithPassword: {
+	// 				error: 'Please enter your password',
+	// 				values: {
+	// 					email
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+
+	// 	const { data: session, error } = await supabase.auth.signInWithPassword({ email, password });
+	// 	if (error) {
+	// 		if (error instanceof AuthApiError && error.status === 400) {
+	// 			return fail(400, {
+	// 				signinWithPassword: {
+	// 					error: 'Invalid credentials.',
+	// 					values: {
+	// 						email
+	// 					}
+	// 				}
+	// 			});
+	// 		}
+	// 		return fail(500, {
+	// 			signinWithPassword: {
+	// 				error: 'Server error. Try again later.',
+	// 				values: {
+	// 					email
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+
+	// 	return { session };
+	// },
+
+	'signin-with-password': async ({ request, locals: { supabase }, cookies }) => {
+		console.log(cookies.getAll());
 		const formData = await request.formData();
 
 		const email = formData.get('email')?.toString();
@@ -30,8 +84,7 @@ export const actions = {
 			});
 		}
 
-		const { error } = await supabase.auth.signInWithPassword({ email, password });
-
+		const { data: session, error } = await supabase.auth.signInWithPassword({ email, password });
 		if (error) {
 			if (error instanceof AuthApiError && error.status === 400) {
 				return fail(400, {
@@ -52,8 +105,9 @@ export const actions = {
 				}
 			});
 		}
-
+		console.log(cookies.getAll());
 		throw redirect(303, '/miro');
+		// return { session };
 	},
 
 	'signin-with-oauth': async ({ request, url, locals: { supabase } }) => {

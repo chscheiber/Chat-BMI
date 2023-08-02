@@ -29,12 +29,4 @@
 	});
 </script>
 
-<div class="app-body h-[96vh] overflow-y-auto flex flex-col pr-2">
-	<slot />
-</div>
-
-<style>
-	.app-body {
-		margin: 16px;
-	}
-</style>
+<slot />

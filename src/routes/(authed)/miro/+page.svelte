@@ -4,16 +4,16 @@
 	import { PROMPT_TYPES } from '$lib';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
-	if (browser) {
-		const miro = (window as any).miro;
+	// if (browser) {
+	// 	const miro = (window as any).miro;
 
-		miro.board.ui.on('icon:click', async () => {
-			await miro.board.ui.openPanel({
-				// The content displayed on the panel is fetched from the specified HTML resource
-				url: '/miro'
-			});
-		});
-	}
+	// 	miro.board.ui.on('icon:click', async () => {
+	// 		await miro.board.ui.openPanel({
+	// 			// The content displayed on the panel is fetched from the specified HTML resource
+	// 			url: '/miro'
+	// 		});
+	// 	});
+	// }
 
 	// if (browser && $currentPrompts.length > 0) {
 	// 	console.log($currentPrompts[0]);
