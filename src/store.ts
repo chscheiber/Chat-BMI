@@ -22,3 +22,5 @@ function createCurrentPrompts() {
 }
 
 export const currentPrompts = createCurrentPrompts();
+
+export const openAIKey = writable<string | null>(null);

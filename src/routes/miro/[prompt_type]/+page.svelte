@@ -18,12 +18,12 @@
 	};
 </script>
 
-<div class="flex flex-col">
+<!-- <div class="flex flex-col">
 	<BackNav heading={data.promptType.name} />
 	<span class="text-sm">{data.promptType.description}</span>
-</div>
+</div> -->
 
-<div class="flex gap-x-2 mt-8 mb-8 items-center">
+<div class="flex gap-x-2 mb-8 items-center">
 	<button
 		type="button"
 		class="btn-icon btn-icon-sm variant-filled me-2"
