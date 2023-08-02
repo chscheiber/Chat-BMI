@@ -1,9 +1,14 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { supabase } from '$lib/supabase';
 import { PROMPT_TYPES, Prompt, PromptFactory } from '$lib';
 
-export const load = (async ({ params }) => {
+export const load = (async ({ params, parent }) => {
+	const { supabase, session } = await parent();
+
+	// if (!session) {
+	// 	throw redirect(303, '/');
+	// }
+
 	const promptType = PROMPT_TYPES.find((type) => type.key === params.prompt_type);
 
 	if (!promptType) throw error(404);
@@ -22,5 +27,5 @@ export const load = (async ({ params }) => {
 		prompts.push(PromptFactory.createPrompt(promptType.key, promptData));
 	}
 
-	return { promptType, prompts };
+	return { promptType, prompts, user: session?.user };
 }) satisfies PageLoad;

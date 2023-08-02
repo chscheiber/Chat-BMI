@@ -52,7 +52,8 @@
 	"type": "module",
 	"dependencies": {
 		"@mirohq/miro-api": "^2.0.0",
-		"@supabase/supabase-js": "^2.26.0",
+		"@supabase/auth-helpers-sveltekit": "^0.10.1",
+		"@supabase/supabase-js": "^2.31.0",
 		"langchain": "^0.0.114",
 		"turndown": "^7.1.2"
 	}

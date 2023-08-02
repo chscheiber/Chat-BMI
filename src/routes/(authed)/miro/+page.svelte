@@ -3,7 +3,6 @@
 	import { goto } from '$app/navigation';
 	import { PROMPT_TYPES } from '$lib';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import { currentPrompts } from '../../store';
 
 	if (browser) {
 		const miro = (window as any).miro;
