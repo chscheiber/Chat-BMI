@@ -9,52 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      ARCHIVED_prompts: {
-        Row: {
-          created_at: string | null
-          db_queries: Json | null
-          description: string | null
-          generation_directives: Json | null
-          id: number
-          memetic_proxies: Json | null
-          name: string
-          output_format: Json | null
-          signifier: string
-          type: number
-        }
-        Insert: {
-          created_at?: string | null
-          db_queries?: Json | null
-          description?: string | null
-          generation_directives?: Json | null
-          id?: number
-          memetic_proxies?: Json | null
-          name: string
-          output_format?: Json | null
-          signifier: string
-          type: number
-        }
-        Update: {
-          created_at?: string | null
-          db_queries?: Json | null
-          description?: string | null
-          generation_directives?: Json | null
-          id?: number
-          memetic_proxies?: Json | null
-          name?: string
-          output_format?: Json | null
-          signifier?: string
-          type?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ARCHIVED_prompts_type_fkey"
-            columns: ["type"]
-            referencedRelation: "prompt_types"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       documents: {
         Row: {
           content: string | null
@@ -241,22 +195,26 @@ export interface Database {
           name: string
           output_format: string | null
           persona_id: number | null
+          private: boolean
           scenario_id: number | null
           signifier: string
           type: string
+          user_id: number | null
         }
         Insert: {
           created_at?: string | null
           description?: string | null
-          elements: Json
+          elements?: Json
           id?: number
           llm_model_name?: string | null
           name: string
           output_format?: string | null
           persona_id?: number | null
+          private?: boolean
           scenario_id?: number | null
           signifier: string
           type: string
+          user_id?: number | null
         }
         Update: {
           created_at?: string | null
@@ -267,9 +225,11 @@ export interface Database {
           name?: string
           output_format?: string | null
           persona_id?: number | null
+          private?: boolean
           scenario_id?: number | null
           signifier?: string
           type?: string
+          user_id?: number | null
         }
         Relationships: [
           {
@@ -374,6 +334,27 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          id: number
+          name: string
+          openai_key: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          name: string
+          openai_key?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          name?: string
+          openai_key?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
