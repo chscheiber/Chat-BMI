@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import type { Prompt } from '$lib';
+import type { LlmSettings } from '$lib/models/prompts/api-prompt.model';
 import { writable } from 'svelte/store';
 
 function createCurrentPrompts() {
@@ -23,4 +24,4 @@ function createCurrentPrompts() {
 
 export const currentPrompts = createCurrentPrompts();
 
-export const openAIKey = writable<string | null>(null);
+export const openAISettings = writable<LlmSettings>({});

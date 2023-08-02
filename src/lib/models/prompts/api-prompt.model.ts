@@ -7,5 +7,13 @@ import type { Prompt } from './prompt.model';
 export type ApiPrompt = Prompt & {
 	persona?: string;
 	scenario?: string;
+	reasoning?: boolean;
+	referencing?: boolean;
+	db_queries?: string[];
 	type: AnalyticalPrompt | BrainstormingPrompt | DesignPrompt | FreeFormPrompt;
+};
+
+export type LlmSettings = {
+	key?: string;
+	model?: string;
 };

@@ -1,15 +1,40 @@
 <script lang="ts">
-	import type { Prompt } from '$lib/models/prompts';
+	import { PromptFactory, type Prompt } from '$lib/models/prompts';
 	import DesignPreview from './DesignPreview.svelte';
 	import FreeFormPreview from './FreeFormPreview.svelte';
 
 	export let prompt: Prompt;
+
+	const savePrompt = async () => {
+		try {
+			const miro = (window as any).miro();
+			const userId = (await miro.board.getUserInfo()).id;
+			const res = await fetch('/api/prompts', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ prompt, userId })
+			});
+
+			if (res.ok && res.body) {
+				const data = await res.json();
+				prompt = PromptFactory.createPrompt(data.type, data);
+			} else {
+				alert('Failed to save prompt.');
+			}
+		} catch (err) {
+			alert('Failed to save prompt.');
+		}
+	};
 </script>
 
 {#if prompt.promptId !== -1}
-	<p>
-		{prompt.description}
-	</p>
+	{#if prompt.description}
+		<p>
+			{prompt.description}
+		</p>
+	{/if}
 {:else}
 	<label class="label">
 		<span>Prompt Name*</span>
@@ -50,7 +75,13 @@
 </label>
 
 {#if prompt.type.key === 'freeForm'}
-	<FreeFormPreview {prompt} />
+	<FreeFormPreview bind:prompt />
 {:else if prompt.type.key === 'design'}
-	<DesignPreview {prompt} />
+	<DesignPreview bind:prompt />
+{/if}
+
+{#if prompt.promptId === -1}
+	<div class="flex justify-end">
+		<button class="btn variant-filled-primary" on:click={savePrompt}>Save Prompt</button>
+	</div>
 {/if}

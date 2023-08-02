@@ -12,10 +12,7 @@ export const BRAINSTORMING_PROMPT_TYPE: PromptType = {
 	key: 'brainstorming',
 	contextSelectable: true,
 	dbQueriesSelectable: false,
-	description:
-		'The goal is to generate many new and creative ideas.' +
-		'It is where hallucinations are tolerated, creative thinking is encouraged,' +
-		'and contextual knowledge is not necessarily required',
+	description: 'The goal is to generate many new and creative ideas.',
 	typeSignifier: `You are IdeationGPT, a GPT that helps with brainstorming and creating ideas. 
         Produce outputs that fulfil the following criteria:
         - Novelty:  The output should be novel

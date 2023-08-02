@@ -39,29 +39,34 @@
 {#if data.prompts.length > 0}
 	<h4 class="h4 mb-2">Saved Prompts</h4>
 	{#each data.prompts as prompt}
-		<div class="flex items-center justify-between border-b-[1px] border-b-slate-400 mb-3 pb-3">
-			<div class="flex flex-col">
-				<div class="flex items-center gap-x-4">
-					<h3 class="h3 me-auto">{prompt.name}</h3>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<div
+			class="flex border-b-[1px] border-b-slate-400 mb-3 pb-3 prompt"
+			on:click={() => {
+				goto(`/miro/${data.promptType.key}/${prompt.promptId}/preview`, {
+					state: { lastPage: data.promptType.key }
+				});
+			}}
+		>
+			<div class="flex flex-col flex-grow">
+				<div class="flex items-center justify-between">
+					<h3 class="h3">
+						<a href={`/miro/${data.promptType.key}/${prompt.promptId}/preview`}>{prompt.name}</a>
+					</h3>
 					<button
 						type="button"
-						class="btn-icon btn-icon-sm"
-						on:click={() => {
-							goto(`/miro/${data.promptType.key}/${prompt.promptId}/preview`, {
-								state: { lastPage: data.promptType.key }
-							});
-						}}><Icon icon="ion:build" /></button
+						class="btn-icon btn-icon-sm variant-filled ms-auto"
+						on:click={(event) => {
+							event.stopPropagation();
+							runPrompt(prompt);
+						}}><Icon icon="ion:arrow-back" rotate={2} /></button
 					>
 				</div>
 				<div class="flex items-center gap-x-4">
 					{#if prompt.description}
 						<span class="text-sm">{prompt.description}</span>
 					{/if}
-					<button
-						type="button"
-						class="btn-icon btn-icon-sm variant-filled"
-						on:click={() => runPrompt(prompt)}><Icon icon="ion:arrow-back" rotate={2} /></button
-					>
 				</div>
 			</div>
 		</div>
@@ -74,3 +79,9 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	.prompt:hover {
+		cursor: pointer;
+	}
+</style>

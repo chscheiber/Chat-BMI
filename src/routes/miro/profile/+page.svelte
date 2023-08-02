@@ -2,38 +2,35 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import { openAIKey } from '../../../store';
+	import { openAISettings } from '../../../store';
 
 	export let data: PageData;
 
-	let key = $openAIKey;
-	const storeKey = (key: string | null) => {
-		if (browser && key) {
-			window.localStorage.setItem('OPENAI_API_KEY', key);
-			alert('Key stored!');
-		} else {
-			alert('Key not stored!');
-		}
-	};
+	let llmSettings = $openAISettings;
 
-	const retrieveKey = () => {
+	const submitForm = (e: Event) => {
+		e.preventDefault();
 		if (browser) {
-			return window.localStorage.getItem('OPENAI_API_KEY');
+			localStorage.setItem('llmSettings', JSON.stringify(llmSettings));
+			alert('Settings saved.');
+		} else {
+			alert('Failed to save settings.');
 		}
 	};
-
-	onMount(() => {
-		const storedKey = retrieveKey();
-		if (storedKey) {
-			key = storedKey;
-			openAIKey.set(key);
-		}
-	});
 </script>
 
-<div class="flex flex-col">
+<form class="flex flex-col" on:submit={submitForm}>
+	<label class="label">
+		<span>Model</span>
+		<select class="select" bind:value={llmSettings.model}>
+			<option value="gpt-3.5-turbo" selected>Chat-GPT</option>
+			<option value="gpt-4">GPT-4</option>
+		</select>
+	</label>
+
 	<label class="label"
-		><span>Open AI Key</span> <input class="input" type="text" bind:value={key} /></label
+		><span>Open AI Key</span>
+		<input class="input" type="password" placeholder="sk-xxx" bind:value={llmSettings.key} /></label
 	>
-	<button class="btn variant-filled mt-4 self-end" on:click={() => storeKey(key)}>Save</button>
-</div>
+	<button class="btn variant-filled mt-4 self-end" type="submit">Save</button>
+</form>

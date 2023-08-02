@@ -3,8 +3,20 @@
 	import type { LayoutData } from './$types';
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	import { openAISettings } from '../../store';
 
 	export let data: LayoutData;
+
+	onMount(() => {
+		if (!browser) return;
+		const storedKey = window.localStorage.getItem('llmSettings');
+		if (storedKey) {
+			const llmSettings = JSON.parse(storedKey);
+			openAISettings.set(llmSettings);
+		}
+	});
 
 	function drawerOpen(): void {
 		drawerStore.open({});
@@ -31,9 +43,9 @@
 		><AppBar>
 			<svelte:fragment slot="lead">
 				<div />
-				<!-- <button class="btn-icon btn-icon-sm variant-filled" on:click={drawerOpen}
-					><Icon icon="ion:menu" /></button
-				> -->
+				<button class="btn-icon btn-icon-sm variant-filled" on:click={() => goto('/miro')}
+					><Icon icon="ion:home" /></button
+				>
 			</svelte:fragment>
 			<h3 class="h3"><a href="/miro">Generative BMI</a></h3>
 			<svelte:fragment slot="trail"

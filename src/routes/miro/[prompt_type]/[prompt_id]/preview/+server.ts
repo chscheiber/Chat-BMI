@@ -9,20 +9,21 @@ import {
 } from 'langchain/prompts';
 import type { RequestHandler } from './$types';
 import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
+import { error } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const prompt = (await request.json()) as ApiPrompt;
-	console.log(prompt);
-
-	if (!OPENAI_API_KEY) {
+	const json = await request.json();
+	const prompt: ApiPrompt = json.prompt;
+	const key = json.key;
+	if (!key) {
 		console.error('No OpenAI API key provided');
-		return new Response('No OpenAI API key provided', { status: 400 });
+		throw error(400, 'No OpenAI API key provided');
 	}
 
 	const readableStream = new ReadableStream({
 		async start(controller) {
 			const chat = new ChatOpenAI({
-				openAIApiKey: OPENAI_API_KEY,
+				openAIApiKey: key,
 				modelName: prompt.llmModelName,
 				streaming: true,
 				callbackManager: CallbackManager.fromHandlers({
@@ -68,6 +69,6 @@ const generateHumanTemplate = (prompt: ApiPrompt) => {
 	if (scenario && scenario !== '') template += `Imagine the following scenario:\n"${scenario}"\n`;
 
 	if (context) template += `Context:\n "${context}"\n`;
-	console.log(template);
+
 	return template;
 };

@@ -4,7 +4,7 @@
 	import { readablestreamStore } from '$lib/readable-stream.store';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-
+	import { openAISettings } from '../../store';
 	export let prompt: Prompt;
 	const conversation = new Conversation(prompt);
 
@@ -12,18 +12,33 @@
 	let reply = '';
 	const runPrompt = async () => {
 		if (!prompt) return;
-		const answer = response.request(
-			new Request(`/miro/${prompt.type.key}/${prompt.promptId}/preview`, {
-				method: 'POST',
-				body: JSON.stringify(prompt),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-		);
+		if ($openAISettings.model) prompt.llmModelName = $openAISettings.model;
+		try {
+			const answer = response.request(
+				new Request(`/miro/${prompt.type.key}/${prompt.promptId}/preview`, {
+					method: 'POST',
+					body: JSON.stringify({ prompt, key: $openAISettings.key }),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+			);
+			reply = (await answer) ?? '';
+			conversation.addMessage(reply, 'system');
+		} catch (err) {
+			reply = 'Could not run prompt.\n\n' + 'Check if you have set the correct Open AI Api key.';
+		}
+	};
 
-		reply = (await answer) ?? '';
-		conversation.addMessage(reply, 'system');
+	const getModelName = (key: string) => {
+		switch (key) {
+			case 'gpt-3.5-turbo':
+				return 'Chat-GPT';
+			case 'gpt-4':
+				return 'GPT-4';
+			default:
+				return 'Unknown';
+		}
 	};
 
 	onMount(() => runPrompt());
@@ -38,7 +53,7 @@
 	/>
 	<div class="card p-4 variant-soft rounded-tl-none space-y-2">
 		<header class="flex justify-between items-center">
-			<p class="font-bold">ChatGPT</p>
+			<p class="font-bold">{getModelName(prompt.llmModelName)}</p>
 			<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 		</header>
 		<p class="whitespace-pre-line text-sm">
@@ -70,7 +85,7 @@
 	<Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" width="w-12" />
 </div> -->
 
-<div
+<!-- <div
 	class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token mt-auto"
 >
 	<button class="input-group-shim" disabled>+</button>
@@ -84,4 +99,4 @@
 		rows="1"
 	/>
 	<button class="variant-filled-primary" disabled>Send</button>
-</div>
+</div> -->
