@@ -1,6 +1,7 @@
 import { ANALYTICAL_PROMPT_TYPE, AnalyticalPrompt } from './analytical-prompt.model';
 import { BRAINSTORMING_PROMPT_TYPE, BrainstormingPrompt } from './brainstorming-prompt.model';
 import { DESIGN_PROMPT_TYPE, DesignPrompt } from './design-prompt.model';
+import { EVALUATION_PROMPT_TYPE, EvaluationPrompt } from './evaluation-prompt.model';
 import { FREE_FORM_PROMPT_TYPE, FreeFormPrompt } from './free-form-prompt.model';
 import type { Prompt } from './prompt.model';
 import type { PromptType, PromptTypeKey, PromptData } from './prompt.types';
@@ -9,6 +10,7 @@ export const PROMPT_TYPES: PromptType[] = [
 	ANALYTICAL_PROMPT_TYPE,
 	BRAINSTORMING_PROMPT_TYPE,
 	DESIGN_PROMPT_TYPE,
+	EVALUATION_PROMPT_TYPE,
 	FREE_FORM_PROMPT_TYPE
 ];
 
@@ -31,7 +33,9 @@ export class PromptFactory {
 				llm_model_name: null,
 				output_format: null,
 				persona_id: null,
-				scenario_id: null
+				scenario_id: null,
+				private: false,
+				user_id: null
 			};
 		}
 
@@ -44,6 +48,8 @@ export class PromptFactory {
 				return new FreeFormPrompt(data);
 			case 'analytical':
 				return new AnalyticalPrompt(data);
+			case 'evaluation':
+				return new EvaluationPrompt(data);
 			default:
 				throw new Error(`Prompt type ${type} does not exist.`);
 		}

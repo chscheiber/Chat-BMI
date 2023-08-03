@@ -43,6 +43,7 @@
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<div
 			class="flex border-b-[1px] border-b-slate-400 mb-3 pb-3 prompt"
+			title="Open Prompt Configuration."
 			on:click={() => {
 				goto(`/miro/${data.promptType.key}/${prompt.promptId}/preview`, {
 					state: { lastPage: data.promptType.key }
@@ -56,11 +57,12 @@
 					</h3>
 					<button
 						type="button"
+						title="Run prompt directly."
 						class="btn-icon btn-icon-sm variant-filled ms-auto"
 						on:click={(event) => {
 							event.stopPropagation();
 							runPrompt(prompt);
-						}}><Icon icon="ion:arrow-back" rotate={2} /></button
+						}}><Icon icon="ion:play" /></button
 					>
 				</div>
 				<div class="flex items-center gap-x-4">

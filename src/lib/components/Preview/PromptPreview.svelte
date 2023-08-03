@@ -1,20 +1,24 @@
 <script lang="ts">
 	import { PromptFactory, type Prompt } from '$lib/models/prompts';
+	import BooleanInput from './BooleanInput.svelte';
 	import DesignPreview from './DesignPreview.svelte';
+	import EvaluationPreview from './EvaluationPreview.svelte';
 	import FreeFormPreview from './FreeFormPreview.svelte';
 
 	export let prompt: Prompt;
 
 	const savePrompt = async () => {
 		try {
-			const miro = (window as any).miro();
-			const userId = (await miro.board.getUserInfo()).id;
+			// const miro = (window as any).miro;
+			// console.log('miro');
+			// const userId = (await miro.board.getUserInfo()).id;
+			// console.log(userId);
 			const res = await fetch('/api/prompts', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ prompt, userId })
+				body: JSON.stringify({ prompt, userId: -1 })
 			});
 
 			if (res.ok && res.body) {
@@ -78,6 +82,8 @@
 	<FreeFormPreview bind:prompt />
 {:else if prompt.type.key === 'design'}
 	<DesignPreview bind:prompt />
+{:else if prompt.type.key === 'evaluation'}
+	<EvaluationPreview bind:prompt />
 {/if}
 
 {#if prompt.promptId === -1}
