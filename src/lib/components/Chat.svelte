@@ -14,6 +14,7 @@
 		if (!prompt) return;
 		if ($openAISettings.model) prompt.llmModelName = $openAISettings.model;
 		try {
+			console.log(JSON.stringify({ prompt, key: $openAISettings.key }));
 			const answer = response.request(
 				new Request(`/miro/${prompt.type.key}/${prompt.promptId}/preview`, {
 					method: 'POST',
@@ -42,8 +43,6 @@
 	};
 
 	onMount(() => runPrompt());
-
-	let currentMessage = '';
 </script>
 
 <div class="grid grid-cols-[auto_1fr] gap-2">

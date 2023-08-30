@@ -27,14 +27,6 @@ export const FREE_FORM_PROMPT_TYPE: PromptType = {
 	contextSelectable: true,
 	dbQueriesSelectable: true,
 	description: 'This Prompt allows you to use all elements as you wish.',
-	typeSignifier:
-		'You are Business Model GPT, a professional and helpful GPT that assists in Business Model Innovation.'
-	// render: {
-	// 	signifier: PROMPT_INPUT_ELEMENTS.TEXTAREA,
-	// 	outputFormat: PROMPT_INPUT_ELEMENTS.TEXTAREA,
-	// 	persona: PROMPT_INPUT_ELEMENTS.TEXTAREA,
-	// 	reasoning: PROMPT_INPUT_ELEMENTS.BOOLEAN,
-	// 	referencing: PROMPT_INPUT_ELEMENTS.BOOLEAN,
-	// 	scenario: PROMPT_INPUT_ELEMENTS.TEXTAREA
-	// }
+	systemPrompt:
+		`You are Business Model GPT, a professional and helpful GPT that assists in Business Model Innovation.`
 };

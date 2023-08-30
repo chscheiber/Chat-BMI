@@ -1,5 +1,6 @@
 import { Prompt } from './prompt.model';
 import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class EvaluationPrompt extends Prompt {
 	public type = EVALUATION_PROMPT_TYPE;
@@ -25,6 +26,5 @@ export const EVALUATION_PROMPT_TYPE: PromptType = {
 	contextSelectable: true,
 	dbQueriesSelectable: true,
 	description: 'These Prompts allow you to evaluate Business Models and their elements.',
-	typeSignifier:
-		'You are Business Model GPT, a professional and critical GPT that carefully evaluates given inputs. You are a GPT that is able to reason and reference your reasoning.'
+	systemPrompt: SYSTEM_PROMPTS.evaluation
 };

@@ -7,7 +7,7 @@
 
 	const prompts = $currentPrompts;
 	const prompt = prompts[0];
-
+	
 	// No prompt selected, go back to the main page
 	if (!prompt && browser) {
 		goto('/miro');

@@ -13,7 +13,7 @@ export type PromptType = {
 	readonly key: PromptTypeKey;
 	readonly name: string;
 	readonly description: string;
-	readonly typeSignifier: string;
+	readonly systemPrompt: string;
 	readonly contextSelectable: boolean;
 	readonly dbQueriesSelectable: boolean;
 	// readonly render: Record<PromptElement, PROMPT_INPUT_ELEMENTS | null>;

@@ -1,3 +1,4 @@
+import { ACTION_PROMPT_TYPE, ActionPrompt } from './action-prompt.model';
 import { ANALYTICAL_PROMPT_TYPE, AnalyticalPrompt } from './analytical-prompt.model';
 import { BRAINSTORMING_PROMPT_TYPE, BrainstormingPrompt } from './brainstorming-prompt.model';
 import { DESIGN_PROMPT_TYPE, DesignPrompt } from './design-prompt.model';
@@ -6,7 +7,11 @@ import { FREE_FORM_PROMPT_TYPE, FreeFormPrompt } from './free-form-prompt.model'
 import type { Prompt } from './prompt.model';
 import type { PromptType, PromptTypeKey, PromptData } from './prompt.types';
 
+/**
+ * All Prompt Types
+ */
 export const PROMPT_TYPES: PromptType[] = [
+	ACTION_PROMPT_TYPE,
 	ANALYTICAL_PROMPT_TYPE,
 	BRAINSTORMING_PROMPT_TYPE,
 	DESIGN_PROMPT_TYPE,
@@ -40,6 +45,8 @@ export class PromptFactory {
 		}
 
 		switch (type as PromptTypeKey) {
+			case 'action':
+				return new ActionPrompt(data);
 			case 'brainstorming':
 				return new BrainstormingPrompt(data);
 			case 'design':

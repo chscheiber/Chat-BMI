@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			});
 
 			const systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(
-				prompt.type.typeSignifier
+				prompt.type.systemPrompt
 			);
 
 			const humanTemplate = generateHumanTemplate(prompt);

@@ -9,10 +9,8 @@
 
 	const runPrompt = async (prompt: Prompt) => {
 		const items = await (window as any).miro.board.getSelection();
-
 		const context = new MiroContext(items);
 		prompt.context = await context.miroContent;
-
 		currentPrompts.set(prompt);
 		goto(`/miro/run`);
 	};

@@ -1,5 +1,6 @@
 import { Prompt } from './prompt.model';
 import type { PromptType } from './prompt.types';
+import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class BrainstormingPrompt extends Prompt {
 	public type = BRAINSTORMING_PROMPT_TYPE;
@@ -13,12 +14,5 @@ export const BRAINSTORMING_PROMPT_TYPE: PromptType = {
 	contextSelectable: true,
 	dbQueriesSelectable: false,
 	description: 'The goal is to generate many new and creative ideas.',
-	typeSignifier: `You are IdeationGPT, a GPT that helps with brainstorming and creating ideas. 
-        Produce outputs that fulfil the following criteria:
-        - Novelty:  The output should be novel
-        - Diversity: Multiple outputs should focus on different things
-        
-        Do not include any instructions or reasoning in the output.
-        Include only the generated ideas in the output.
-        Under no circumstances must anything other then the generated ideas be given in the output.`
+	systemPrompt: SYSTEM_PROMPTS.brainstorming
 };
