@@ -38,11 +38,20 @@
 	function drawerClose(): void {
 		drawerStore.close();
 	}
+
+	export const links = [
+		{ icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
+		{ icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
+		{ icon: 'ion:library-outline', text: 'Prompts', href: '/miro/prompts' },
+		{ icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
+		{ icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
+		{ icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
+	] as const;
 </script>
 
 <Drawer>
 	<div class="flex justify-start items-center m-4">
-		<button class="btn-icon btn-icon-sm variant-outline" on:click={drawerClose}
+		<button class="btn-icon btn-icon-sm variant-filled" on:click={drawerClose}
 			><Icon icon="ion:close" /></button
 		>
 		<h3 class="h3 mx-4">Generative BMI</h3>
@@ -55,9 +64,13 @@
 		>
 	</div>
 	<hr />
-	<div class="m-4 flex flex-col">
-		<h4 class="h4">Analytical</h4>
-	</div>
+	{#each links as link}
+		<a class="my-4 ms-4 flex items-center justify-start gap-4" href={link.href}>
+			<Icon icon={link.icon} style="font-size: 22px;" />
+			<h4 class="h4">{link.text}</h4>
+		</a>
+		<hr class="mx-4" />
+	{/each}
 </Drawer>
 <AppShell>
 	<svelte:fragment slot="header"
