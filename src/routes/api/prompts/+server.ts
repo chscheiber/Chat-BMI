@@ -1,10 +1,24 @@
 import type { AdditionalPromptElements } from '$lib';
 import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
 import { supabase } from '$lib/supabase';
+import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async () => {
-	return new Response();
+export const GET: RequestHandler = async ({ url }) => {
+	const searchValue = url.searchParams.get('value');
+	let limit = 10;
+	if (url.searchParams.get('limit')) {
+		limit = Number(url.searchParams.get('limit'));
+	}
+	if (!searchValue) throw error(400, 'No search value provided');
+
+	const { data, error: e } = await supabase
+		.from('prompts')
+		.select()
+		.textSearch('fts', searchValue)
+		.limit(limit);
+
+	return new Response(JSON.stringify(data), { status: 200 });
 };
 
 export const POST: RequestHandler = async ({ request }) => {

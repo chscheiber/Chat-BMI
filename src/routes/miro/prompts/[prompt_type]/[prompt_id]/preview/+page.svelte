@@ -15,7 +15,9 @@
 		prompt = $newPrompt;
 		newPrompt.set(null);
 	} else {
-		prompt = PromptFactory.createPrompt(data.params.prompt_type as PromptTypeKey);
+		prompt = data.prompt
+			? data.prompt
+			: PromptFactory.createPrompt(data.params.prompt_type as PromptTypeKey);
 	}
 </script>
 

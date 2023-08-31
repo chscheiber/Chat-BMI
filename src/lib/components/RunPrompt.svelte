@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { PROMPT_TYPES, PromptFactory, type PromptTypeKey } from '$lib/models';
 	import { currentContext, newPrompt } from '$lib/store';
-	import Icon from '@iconify/svelte';
+	import RunConfigButtons from './RunConfigButtons.svelte';
 	let signifier = '';
 	let promptType: PromptTypeKey = 'freeForm';
 
@@ -15,13 +15,13 @@
 	};
 </script>
 
-<div class="flex flex-col input-group rounded-container-token mt-auto">
+<div class="flex flex-col input-group rounded-container-token">
 	<select class="input" bind:value={promptType}>
 		{#each PROMPT_TYPES as promptType}
 			<option value={promptType.key}>{promptType.name}</option>
 		{/each}
 	</select>
-	<div class="prompt-group no-pad input-group-divider border-t-[1px] border-r-0 border-inherit">
+	<div class="prompt-group !p-0 input-group-divider border-t-[1px] border-r-0 border-inherit">
 		<textarea
 			class="bg-transparent border-0 flex-1 resize-none"
 			bind:value={signifier}
@@ -31,26 +31,11 @@
 Hint: Select context from the miro board"
 			rows="3"
 		/>
-		<div class="flex flex-col no-pad" style="align-items: stretch;">
-			<button
-				class="variant-filled-secondary grow-[3] text-[18px]"
-				title="Configure prompt"
-				on:click={createNewPrompt}><Icon icon="grommet-icons:configure" /></button
-			>
-			<button
-				class="{selectedClass} text-white grow-[4] text-[24px]"
-				title="Run prompt"
-				disabled={signifier === ''}><Icon icon="gridicons:play" /></button
-			>
-		</div>
+		<RunConfigButtons {signifier} {promptType} />
 	</div>
 </div>
 
 <style>
-	.no-pad {
-		padding: 0px;
-	}
-
 	.prompt-group {
 		display: flex;
 		align-items: stretch;

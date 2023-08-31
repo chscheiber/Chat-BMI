@@ -4,7 +4,7 @@
 	import { readablestreamStore } from '$lib/readable-stream.store';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { openAISettings } from '../store';
+	import { currentContext, openAISettings } from '../store';
 	export let prompt: Prompt;
 	const conversation = new Conversation(prompt);
 
@@ -14,9 +14,10 @@
 		if (!prompt) return;
 		if ($openAISettings.model) prompt.llmModelName = $openAISettings.model;
 		try {
+			prompt.context = $currentContext;
 			console.log(JSON.stringify({ prompt, key: $openAISettings.key }));
 			const answer = response.request(
-				new Request(`/miro/${prompt.type.key}/${prompt.promptId}/preview`, {
+				new Request(`/api/run`, {
 					method: 'POST',
 					body: JSON.stringify({ prompt, key: $openAISettings.key }),
 					headers: {

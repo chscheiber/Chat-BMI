@@ -1,4 +1,5 @@
-import { OPENAI_API_KEY } from '$env/static/private';
+import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
+import { error, type RequestHandler } from '@sveltejs/kit';
 import { CallbackManager } from 'langchain/callbacks';
 import { LLMChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
@@ -7,9 +8,6 @@ import {
 	HumanMessagePromptTemplate,
 	SystemMessagePromptTemplate
 } from 'langchain/prompts';
-import type { RequestHandler } from './$types';
-import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
-import { error } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const json = await request.json();

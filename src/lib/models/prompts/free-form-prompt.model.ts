@@ -1,5 +1,6 @@
 import { Prompt } from './prompt.model';
 import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class FreeFormPrompt extends Prompt {
 	public type = FREE_FORM_PROMPT_TYPE;
@@ -27,6 +28,5 @@ export const FREE_FORM_PROMPT_TYPE: PromptType = {
 	contextSelectable: true,
 	dbQueriesSelectable: true,
 	description: 'This Prompt allows you to use all elements as you wish.',
-	systemPrompt:
-		`You are Business Model GPT, a professional and helpful GPT that assists in Business Model Innovation.`
+	systemPrompt: SYSTEM_PROMPTS.freeForm
 };
