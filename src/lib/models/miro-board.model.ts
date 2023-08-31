@@ -19,7 +19,6 @@ export class MiroBoard {
 			width: 400
 		});
 		(window as any).miro.board.viewport.zoomTo(textObject);
-		(window as any).miro.board.viewport.setZoom(1);
 		(window as any).miro.board.select({ id: textObject.id });
 	}
 }

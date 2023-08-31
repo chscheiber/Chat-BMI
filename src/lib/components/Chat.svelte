@@ -3,7 +3,7 @@
 	import { Conversation } from '$lib/models/prompts/conversation.model';
 	import { readablestreamStore } from '$lib/readable-stream.store';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
+	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
 	import { currentContext, openAISettings } from '../store';
 	import Icon from '@iconify/svelte';
 	import { browser } from '$app/environment';
@@ -56,6 +56,22 @@
 
 	onMount(() => runPrompt());
 
+	let div: any;
+	let autoscroll = false;
+
+	beforeUpdate(() => {
+		if (div) {
+			const scrollableDistance = div.scrollHeight - div.offsetHeight;
+			autoscroll = div.scrollTop > scrollableDistance - 20;
+		}
+	});
+
+	afterUpdate(() => {
+		if (autoscroll) {
+			div.scrollTo(0, div.scrollHeight);
+		}
+	});
+
 	const exportResponse = async () => {
 		if (browser) {
 			const message = conversation.messages[conversation.messages.length - 1];
@@ -64,7 +80,10 @@
 	};
 </script>
 
-<div class="card p-4 variant-soft rounded-tl-none space-y-2 max-h-[50vh] overflow-y-auto">
+<div
+	class="card p-4 variant-soft rounded-tl-none space-y-2 max-h-[50vh] overflow-y-auto"
+	bind:this={div}
+>
 	<header class="flex justify-between items-center">
 		<div class="flex items-center gap-x-2">
 			<Avatar
@@ -72,13 +91,6 @@
 				width="w-8"
 			/>
 			<p class="font-bold">{getModelName(prompt.llmModelName)}</p>
-			{#if !awaitingResponse}
-				<button
-					on:click={exportResponse}
-					class="btn-icon btn-icon-sm ms-2 variant-filled-primary"
-					title="Export content to Miro Board"><Icon icon="ion:chevron-right" /></button
-				>
-			{/if}
 		</div>
 		<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 	</header>
@@ -91,6 +103,13 @@
 			{reply}
 		{/if}
 	</p>
+	{#if !awaitingResponse}
+		<button
+			on:click={exportResponse}
+			class="btn variant-filled-primary"
+			title="Export content to Miro Board">Export to Miro Board</button
+		>
+	{/if}
 	<!-- {#if reply}
 			<div class="flex justify-end pb-0">
 				<button class="btn-icon btn-icon-sm variant-filled" use:clipboard={reply}
