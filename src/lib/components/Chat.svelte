@@ -19,7 +19,11 @@
 			const answer = response.request(
 				new Request(`/api/run`, {
 					method: 'POST',
-					body: JSON.stringify({ prompt, key: $openAISettings.key }),
+					body: JSON.stringify({
+						prompt,
+						key: $openAISettings.key,
+						streaming: $openAISettings.streaming
+					}),
 					headers: {
 						'Content-Type': 'application/json'
 					}

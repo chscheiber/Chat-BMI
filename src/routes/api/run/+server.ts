@@ -18,6 +18,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		throw error(400, 'No OpenAI API key provided');
 	}
 
+	if (json.streaming) {
+		return streamResponse(prompt, key);
+	}
+	return waitFullResponse(prompt, key);
+};
+
+const streamResponse = async (prompt: ApiPrompt, key: string) => {
 	const readableStream = new ReadableStream({
 		async start(controller) {
 			const chat = new ChatOpenAI({
@@ -28,26 +35,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					handleLLMNewToken: async (token: string) => controller.enqueue(token)
 				})
 			});
-
-			const systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(
-				prompt.type.systemPrompt
-			);
-
-			const humanTemplate = generateHumanTemplate(prompt);
-			const humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
-			const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-				systemMessagePrompt,
-				humanMessagePrompt
-			]);
-
-			const chain = new LLMChain({
-				llm: chat,
-				prompt: chatPrompt
-			});
-
-			await chain.call({});
-
-			controller.close();
+			await callChain(prompt, key, chat);
+			setTimeout(() => controller.close(), 1000);
 		}
 	});
 
@@ -55,6 +44,37 @@ export const POST: RequestHandler = async ({ request }) => {
 	return new Response(readableStream, {
 		headers: { 'Content-Type': 'text/plain' }
 	});
+};
+
+const waitFullResponse = async (prompt: ApiPrompt, key: string) => {
+	const chat = new ChatOpenAI({
+		openAIApiKey: key,
+		modelName: prompt.llmModelName,
+		streaming: false
+	});
+
+	const response = await callChain(prompt, key, chat);
+	console.log(response);
+	return new Response(response.text, {
+		headers: { 'Content-Type': 'text/plain' }
+	});
+};
+
+const callChain = async (prompt: ApiPrompt, key: string, chat: ChatOpenAI) => {
+	const systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(prompt.type.systemPrompt);
+	const humanTemplate = generateHumanTemplate(prompt);
+	const humanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(humanTemplate);
+	const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+		systemMessagePrompt,
+		humanMessagePrompt
+	]);
+
+	const chain = new LLMChain({
+		llm: chat,
+		prompt: chatPrompt
+	});
+
+	return await chain.call({});
 };
 
 const generateHumanTemplate = (prompt: ApiPrompt) => {

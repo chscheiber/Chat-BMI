@@ -14,6 +14,7 @@ export type ApiPrompt = Prompt & {
 };
 
 export type LlmSettings = {
-	key?: string;
-	model?: string;
+	key: string;
+	model: string;
+	streaming: boolean;
 };

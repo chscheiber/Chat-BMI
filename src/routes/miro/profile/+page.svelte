@@ -13,17 +13,25 @@
 	const submitForm = (e: Event) => {
 		if (browser) {
 			openAISettings.set(llmSettings);
-			toastStore.trigger({ message: 'Settings saved.', background: 'variant-filled-success' });
+			toastStore.trigger({ message: 'Settings saved', background: 'variant-filled-success' });
 		}
 	};
 </script>
 
-<form class="flex flex-col" on:submit|preventDefault={submitForm}>
+<form class="flex flex-col gap-y-4" on:submit|preventDefault={submitForm}>
 	<label class="label">
 		<span>Model</span>
 		<select class="select" bind:value={llmSettings.model}>
 			<option value="gpt-3.5-turbo" selected>Chat-GPT</option>
 			<option value="gpt-4">GPT-4</option>
+		</select>
+	</label>
+
+	<label class="label">
+		<span>Response Type</span>
+		<select class="select" bind:value={llmSettings.streaming}>
+			<option value={true} selected>Streaming</option>
+			<option value={false}>Wait for response</option>
 		</select>
 	</label>
 

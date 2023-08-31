@@ -26,4 +26,8 @@ export const newPrompt = writable<Prompt | null>(null);
 export const currentPrompts = createCurrentPrompts();
 export const currentContext = writable<string>('');
 
-export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSettings', {});
+export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSettings', {
+	key: '',
+	model: 'gpt-4',
+	streaming: true
+});
