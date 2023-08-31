@@ -3,20 +3,13 @@
 	import { MiroContext, Prompt } from '$lib';
 	import PromptFinder from '$lib/components/PromptFinder/PromptFinder.svelte';
 	import RunPrompt from '$lib/components/RunPrompt.svelte';
+	import { MiroBoard } from '$lib/models/miro-board.model';
 
 	// Prevent opening the panel if local storage is not accessible
 	try {
 		window.localStorage.setItem('miro', 'true');
 		if (browser) {
-			const miro = (window as any).miro;
-
-			miro.board.ui.on('icon:click', async () => {
-				await miro.board.ui.openPanel({
-					// The content displayed on the panel is fetched from the specified HTML resource
-					url: '/miro'
-				});
-			});
-
+			MiroBoard.registerApp();
 			const context = new MiroContext();
 			context.listenToUpdates();
 		}

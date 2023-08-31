@@ -5,12 +5,18 @@
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { currentContext, openAISettings } from '../store';
+	import Icon from '@iconify/svelte';
+	import { browser } from '$app/environment';
+	import { MiroBoard } from '$lib/models/miro-board.model';
 	export let prompt: Prompt;
 	const conversation = new Conversation(prompt);
 
 	const response = readablestreamStore();
 	let reply = '';
+
+	let awaitingResponse = true;
 	const runPrompt = async () => {
+		awaitingResponse = true;
 		if (!prompt) return;
 		if ($openAISettings.model) prompt.llmModelName = $openAISettings.model;
 		try {
@@ -30,6 +36,7 @@
 				})
 			);
 			reply = (await answer) ?? '';
+			awaitingResponse = false;
 			conversation.addMessage(reply, 'system');
 		} catch (err) {
 			reply = 'Could not run prompt.\n\n' + 'Check if you have set the correct Open AI Api key.';
@@ -48,35 +55,49 @@
 	};
 
 	onMount(() => runPrompt());
+
+	const exportResponse = async () => {
+		if (browser) {
+			const message = conversation.messages[conversation.messages.length - 1];
+			MiroBoard.writeToBoard(message.text);
+		}
+	};
 </script>
 
-<div class="grid grid-cols-[auto_1fr] gap-2">
-	<Avatar
-		src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
-		width="w-10"
-	/>
-	<div class="card p-4 variant-soft rounded-tl-none space-y-2">
-		<header class="flex justify-between items-center">
+<div class="card p-4 variant-soft rounded-tl-none space-y-2 max-h-[50vh] overflow-y-auto">
+	<header class="flex justify-between items-center">
+		<div class="flex items-center gap-x-2">
+			<Avatar
+				src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
+				width="w-8"
+			/>
 			<p class="font-bold">{getModelName(prompt.llmModelName)}</p>
-			<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
-		</header>
-		<p class="whitespace-pre-line text-sm">
-			{#if $response.loading && $response.text === ''}
-				<ProgressRadial width={'w-10'} stroke={100} />
-			{:else if $response.loading}
-				{$response.text}
-			{:else}
-				{reply}
+			{#if !awaitingResponse}
+				<button
+					on:click={exportResponse}
+					class="btn-icon btn-icon-sm ms-2 variant-filled-primary"
+					title="Export content to Miro Board"><Icon icon="ion:chevron-right" /></button
+				>
 			{/if}
-		</p>
-		<!-- {#if reply}
+		</div>
+		<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
+	</header>
+	<p class="whitespace-pre-line text-sm">
+		{#if $response.loading && $response.text === ''}
+			<ProgressRadial width={'w-10'} stroke={100} />
+		{:else if $response.loading}
+			{$response.text}
+		{:else}
+			{reply}
+		{/if}
+	</p>
+	<!-- {#if reply}
 			<div class="flex justify-end pb-0">
 				<button class="btn-icon btn-icon-sm variant-filled" use:clipboard={reply}
 					><Icon icon="ion:copy-outline" /></button
 				>
 			</div>
 		{/if} -->
-	</div>
 </div>
 <!-- <div class="grid grid-cols-[1fr_auto] gap-2">
 	<div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
