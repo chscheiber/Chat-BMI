@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppBar, AppShell, initializeStores } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, Toast, initializeStores } from '@skeletonlabs/skeleton';
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import type { DrawerSettings, DrawerStore } from '@skeletonlabs/skeleton';
 	import type { LayoutData } from './$types';
@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { openAISettings } from '../../store';
+	import { openAISettings } from '$lib/store';
 
 	export let data: LayoutData;
 
@@ -40,12 +40,12 @@
 	}
 
 	export const links = [
-		{ icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
-		{ icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
-		{ icon: 'ion:library-outline', text: 'Prompts', href: '/miro/prompts' },
-		{ icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
-		{ icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
-		{ icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
+		// { icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
+		// { icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
+		{ icon: 'ion:library-outline', text: 'Prompts', href: '/miro/prompts' }
+		// { icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
+		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
+		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
 	] as const;
 </script>
 
@@ -65,13 +65,25 @@
 	</div>
 	<hr />
 	{#each links as link}
-		<a class="my-4 ms-4 flex items-center justify-start gap-4" href={link.href}>
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<div
+			class="my-4 ms-4 flex items-center justify-start gap-4 hover:cursor-pointer"
+			on:click={() => {
+				drawerClose();
+				goto(link.href);
+			}}
+			on:keypress={() => {
+				drawerClose();
+				goto(link.href);
+			}}
+		>
 			<Icon icon={link.icon} style="font-size: 22px;" />
 			<h4 class="h4">{link.text}</h4>
-		</a>
+		</div>
 		<hr class="mx-4" />
 	{/each}
 </Drawer>
+<Toast />
 <AppShell>
 	<svelte:fragment slot="header"
 		><AppBar background="bg-surface-100">

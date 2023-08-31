@@ -1,25 +1,24 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { openAISettings } from '$lib/store';
 	import type { PageData } from './$types';
-	import { openAISettings } from '../../../store';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	export let data: PageData;
 
 	let llmSettings = $openAISettings;
 
 	const submitForm = (e: Event) => {
-		e.preventDefault();
 		if (browser) {
-			localStorage.setItem('llmSettings', JSON.stringify(llmSettings));
-			alert('Settings saved.');
-		} else {
-			alert('Failed to save settings.');
+			openAISettings.set(llmSettings);
+			toastStore.trigger({ message: 'Settings saved.', background: 'variant-filled-success' });
 		}
 	};
 </script>
 
-<form class="flex flex-col" on:submit={submitForm}>
+<form class="flex flex-col" on:submit|preventDefault={submitForm}>
 	<label class="label">
 		<span>Model</span>
 		<select class="select" bind:value={llmSettings.model}>

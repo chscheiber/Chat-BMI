@@ -4,7 +4,7 @@
 	import { readablestreamStore } from '$lib/readable-stream.store';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { openAISettings } from '../../store';
+	import { openAISettings } from '../store';
 	export let prompt: Prompt;
 	const conversation = new Conversation(prompt);
 

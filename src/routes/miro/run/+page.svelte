@@ -3,11 +3,11 @@
 	import { goto } from '$app/navigation';
 	import BackNav from '$lib/components/BackNav.svelte';
 	import Chat from '$lib/components/Chat.svelte';
-	import { currentPrompts } from '../../../store';
+	import { currentPrompts } from '$lib/store';
 
 	const prompts = $currentPrompts;
 	const prompt = prompts[0];
-	
+
 	// No prompt selected, go back to the main page
 	if (!prompt && browser) {
 		goto('/miro');

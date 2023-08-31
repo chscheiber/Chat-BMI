@@ -1,7 +1,7 @@
-import { browser } from '$app/environment';
 import type { Prompt } from '$lib';
 import type { LlmSettings } from '$lib/models/prompts/api-prompt.model';
-import { writable } from 'svelte/store';
+import { localStorageStore } from '@skeletonlabs/skeleton';
+import { writable, type Writable } from 'svelte/store';
 
 function createCurrentPrompts() {
 	const initialPrompts: Prompt[] = [];
@@ -22,6 +22,8 @@ function createCurrentPrompts() {
 	};
 }
 
+export const newPrompt = writable<Prompt | null>(null);
 export const currentPrompts = createCurrentPrompts();
+export const currentContext = writable<string>('');
 
-export const openAISettings = writable<LlmSettings>({});
+export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSettings', {});

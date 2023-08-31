@@ -1,20 +1,25 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BackNav from '$lib/components/BackNav.svelte';
-	import { PromptFactory, type Prompt } from '$lib/models/prompts';
+	import { PromptFactory, type Prompt, type PromptTypeKey } from '$lib/models/prompts';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
-	import { currentPrompts } from '../../../../../store';
 	import type { PageData } from './$types';
 	import Context from './Context.svelte';
 	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
+	import { currentPrompts, newPrompt } from '$lib/store';
 
 	export let data: PageData;
-	export let prompt: Prompt = data.prompt ?? PromptFactory.createPrompt(data.params.prompt_type);
+	let prompt: Prompt;
+
+	if ($newPrompt) {
+		prompt = $newPrompt;
+		newPrompt.set(null);
+	} else {
+		prompt = PromptFactory.createPrompt(data.params.prompt_type as PromptTypeKey);
+	}
 </script>
 
-<div class="flex flex-col mb-6">
-	<BackNav heading={prompt.name} lastPage={'/miro/' + prompt.type.key} />
-</div>
+<BackNav heading={prompt.name ?? 'New Prompt'} />
 
 <Stepper
 	buttonCompleteLabel="Run Prompt"

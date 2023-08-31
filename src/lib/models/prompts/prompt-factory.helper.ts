@@ -20,9 +20,29 @@ export const PROMPT_TYPES: PromptType[] = [
 ];
 
 export class PromptFactory {
-	static createPrompt(type: PromptTypeKey | string): Prompt;
-	static createPrompt(type: PromptTypeKey | string, data: PromptData): Prompt;
-	static createPrompt(type: PromptTypeKey | string, data?: PromptData): Prompt {
+	static emptyPrompt(type: PromptTypeKey, data?: Partial<PromptData>): Prompt {
+		data = {
+			id: -1,
+			description: null,
+			created_at: null,
+			name: 'New Prompt',
+			signifier: '',
+			elements: {},
+			type,
+			llm_model_name: null,
+			output_format: null,
+			persona_id: null,
+			scenario_id: null,
+			private: false,
+			user_id: null,
+			...data
+		};
+		return this.createPrompt(type, data as PromptData);
+	}
+
+	static createPrompt(type: PromptTypeKey | PromptTypeKey): Prompt;
+	static createPrompt(type: PromptTypeKey | PromptTypeKey, data: PromptData): Prompt;
+	static createPrompt(type: PromptTypeKey | PromptTypeKey, data?: PromptData): Prompt {
 		if (!PROMPT_TYPES.find((promptType) => '' + promptType.key === type))
 			throw new Error(`Prompt type ${type} does not exist.`);
 
@@ -44,7 +64,7 @@ export class PromptFactory {
 			};
 		}
 
-		switch (type as PromptTypeKey) {
+		switch (type) {
 			case 'action':
 				return new ActionPrompt(data);
 			case 'brainstorming':

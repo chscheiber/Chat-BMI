@@ -1,22 +1,33 @@
 import type { FrameMiroBoardItem, MiroBoardItem } from './context.types';
 import { Frame } from './frame.model';
 import { ContentItem } from './content-item.model';
+import { browser } from '$app/environment';
+import { currentContext } from '$lib/store';
 
 export class MiroContext {
 	private contextItems: Record<string, { item: ContentItem; group?: string }> = {};
 	public miroContent = '';
 
-	public constructor();
-	public constructor(boardItems: MiroBoardItem[]);
-	public constructor(boardItems?: MiroBoardItem[]) {
-		if (boardItems) this.updateItems(boardItems);
+	public listenToUpdates() {
+		if (browser) {
+			(window as any).miro.board.getSelection().then(async (items: MiroBoardItem[]) => {
+				await this.updateItems(items);
+			});
+			(window as any).miro.board.ui.on(
+				'selection:update',
+				async (event: { items: MiroBoardItem[] }) => {
+					await this.updateItems(event?.items);
+				}
+			);
+		}
 	}
 
-	public async updateItems(boardItems?: MiroBoardItem[]): Promise<string> {
+	private async updateItems(boardItems?: MiroBoardItem[]): Promise<string> {
 		this.contextItems = {};
 		this.miroContent = '';
 
 		if (!boardItems || boardItems.length === 0) {
+			currentContext.set('');
 			return '';
 		}
 
@@ -32,6 +43,7 @@ export class MiroContext {
 			}
 		}
 		this.miroContent = this.parse();
+		currentContext.set(this.miroContent);
 		return this.miroContent;
 	}
 
