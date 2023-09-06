@@ -5,7 +5,6 @@
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
 	import { currentContext, openAISettings } from '../store';
-	import Icon from '@iconify/svelte';
 	import { browser } from '$app/environment';
 	import { MiroBoard } from '$lib/models/miro-board.model';
 	export let prompt: Prompt;
@@ -16,8 +15,8 @@
 
 	let awaitingResponse = true;
 	const runPrompt = async () => {
+		if (!browser || !prompt) return;
 		awaitingResponse = true;
-		if (!prompt) return;
 		if ($openAISettings.model) prompt.llmModelName = $openAISettings.model;
 		try {
 			prompt.context = $currentContext;
@@ -90,7 +89,9 @@
 				src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
 				width="w-8"
 			/>
-			<p class="font-bold">{getModelName(prompt.llmModelName)}</p>
+			{#if prompt}
+				<p class="font-bold">{getModelName(prompt.llmModelName)}</p>
+			{/if}
 		</div>
 		<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 	</header>

@@ -31,3 +31,5 @@ export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSe
 	model: 'gpt-4',
 	streaming: true
 });
+
+export const userId = writable<string | null>(null);

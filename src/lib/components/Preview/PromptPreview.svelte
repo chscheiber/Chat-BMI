@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PromptFactory, type Prompt } from '$lib/models/prompts';
+	import { userId } from '$lib/store';
 	import BooleanInput from './BooleanInput.svelte';
 	import DesignPreview from './DesignPreview.svelte';
 	import EvaluationPreview from './EvaluationPreview.svelte';
@@ -18,7 +19,7 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ prompt, userId: -1 })
+				body: JSON.stringify({ prompt, userId: $userId })
 			});
 
 			if (res.ok && res.body) {
