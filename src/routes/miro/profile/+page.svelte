@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { openAISettings } from '$lib/store';
+	import { userId, openAISettings } from '$lib/store';
 	import type { PageData } from './$types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 
@@ -19,6 +19,10 @@
 </script>
 
 <form class="flex flex-col gap-y-4" on:submit|preventDefault={submitForm}>
+	<label class="label">
+		<span>Miro User ID</span>
+		<input class="input" type="text" disabled value={$userId} />
+	</label>
 	<label class="label">
 		<span>Model</span>
 		<select class="select" bind:value={llmSettings.model}>

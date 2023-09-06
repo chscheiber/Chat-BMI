@@ -1,9 +1,9 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { supabase } from '$lib/supabase';
 import { PROMPT_TYPES, Prompt, PromptFactory } from '$lib';
 
-export const load = (async ({ params }) => {
+export const load = (async ({ params, parent }) => {
+	const { supabase, session } = await parent();
 	const promptType = PROMPT_TYPES.find((type) => type.key === params.prompt_type);
 
 	if (!promptType) throw error(404);

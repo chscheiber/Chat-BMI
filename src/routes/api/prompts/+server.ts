@@ -1,10 +1,10 @@
 import type { AdditionalPromptElements } from '$lib';
 import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
-import { supabase } from '$lib/supabase';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals: { supabase }, cookies }) => {
+	console.log('cookies', cookies.getAll());
 	const searchValue = url.searchParams.get('value');
 	let limit = 10;
 	if (url.searchParams.get('limit')) {
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	return new Response(JSON.stringify(data), { status: 200 });
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals: { supabase } }) => {
 	const json = await request.json();
 	const prompt: ApiPrompt = json.prompt;
 	const userId: number = json.userId ?? null;

@@ -1,9 +1,10 @@
-import { supabase } from '$lib/supabase';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { PromptFactory, type PromptTypeKey } from '$lib';
 
-export const load = (async ({ params }) => {
+export const load = (async ({ params, parent }) => {
+	const { supabase, session } = await parent();
+
 	if (params.prompt_id === 'new') {
 		return { prompt: null, params };
 	}

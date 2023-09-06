@@ -7,19 +7,39 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { openAISettings } from '$lib/store';
+	import { openAISettings, userId } from '$lib/store';
 
 	export let data: LayoutData;
 
 	initializeStores();
 	const drawerStore = getDrawerStore();
 
-	onMount(() => {
+	onMount(async () => {
 		if (!browser) return;
 		const storedKey = window.localStorage.getItem('llmSettings');
 		if (storedKey) {
 			const llmSettings = JSON.parse(storedKey);
 			openAISettings.set(llmSettings);
+		}
+		if (!userId) return;
+		const userInfo = await miro.board.getUserInfo();
+		try {
+			const res = await fetch('/api/authorize/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ userId: userInfo.id })
+			});
+			const loginData = await res.json();
+			const { access_token, refresh_token } = loginData.session;
+			const { data: sessionData, error: err } = await data.supabase.auth.setSession({
+				access_token,
+				refresh_token
+			});
+			console.log(sessionData.user);
+		} catch (error) {
+			console.error(error);
 		}
 	});
 

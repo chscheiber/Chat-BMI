@@ -1,8 +1,10 @@
 import type { Prompt } from './prompt.model';
 
 export class Conversation {
+	public id = -1;
 	public prompt: Prompt;
 	public messages: Message[];
+	public starred = false;
 
 	constructor(prompt: Prompt) {
 		this.prompt = prompt;

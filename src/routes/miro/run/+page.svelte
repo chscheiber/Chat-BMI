@@ -1,3 +1,10 @@
+<!-- 
+	/miro/run/[conversation_id]
+
+	A conversation consists of one or more prompts inlcuding the responses.
+	Conversations are stored in the database and can be retrieved by the conversation_id.
+
+ -->
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
