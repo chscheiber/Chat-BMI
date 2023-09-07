@@ -1,3 +1,4 @@
+import { OPENAI_API_KEY } from '$env/static/private';
 import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { CallbackManager } from 'langchain/callbacks';
@@ -12,7 +13,7 @@ import {
 export const POST: RequestHandler = async ({ request }) => {
 	const json = await request.json();
 	const prompt: ApiPrompt = json.prompt;
-	const key = json.key;
+	const key = OPENAI_API_KEY;
 	if (!key) {
 		console.error('No OpenAI API key provided');
 		throw error(400, 'No OpenAI API key provided');

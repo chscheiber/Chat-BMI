@@ -1,13 +1,21 @@
 <script lang="ts">
-	import { AppBar, AppShell, Toast, initializeStores } from '@skeletonlabs/skeleton';
-	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
-	import type { DrawerSettings, DrawerStore } from '@skeletonlabs/skeleton';
-	import type { LayoutData } from './$types';
-	import Icon from '@iconify/svelte';
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import {
+		AppBar,
+		AppShell,
+		Drawer,
+		Modal,
+		Toast,
+		getDrawerStore,
+		initializeStores,
+		type DrawerSettings
+	} from '@skeletonlabs/skeleton';
+
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { openAISettings } from '$lib/store';
+	import Icon from '@iconify/svelte';
+	import { onMount } from 'svelte';
+	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
 
@@ -84,6 +92,7 @@
 	{/each}
 </Drawer>
 <Toast />
+<Modal />
 <AppShell>
 	<svelte:fragment slot="header"
 		><AppBar background="bg-surface-100">

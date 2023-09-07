@@ -35,9 +35,9 @@
 		</select>
 	</label>
 
-	<label class="label"
+	<!-- <label class="label"
 		><span>Open AI Key</span>
 		<input class="input" type="password" placeholder="sk-xxx" bind:value={llmSettings.key} /></label
-	>
+	> -->
 	<button class="btn variant-filled mt-4 self-end" type="submit">Save</button>
 </form>

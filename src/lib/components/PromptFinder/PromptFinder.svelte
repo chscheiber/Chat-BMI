@@ -1,12 +1,24 @@
 <script lang="ts">
 	import { PromptFactory, type Prompt, type PromptData, type PromptTypeKey } from '$lib/models';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import { load } from '../../../routes/miro/prompts/[prompt_type]/+page';
+	import { ProgressRadial, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import RunConfigButtons from '../RunConfigButtons.svelte';
 	import { miroSession } from '$lib/store';
 
 	let prompts: Prompt[] = [];
 	let searchValue = '';
+
+	const modalStore = getModalStore();
+
+	const triggerModal = (prompt: Prompt) => {
+		const modal: ModalSettings = {
+			type: 'alert',
+			// Data
+			title: prompt.name,
+			body: `<p class="italic pb-4">${prompt.description}</p><hr/><p class="pt-4">${prompt.signifier}</p>`,
+			buttonTextCancel: 'Done'
+		};
+		modalStore.trigger(modal);
+	};
 
 	let timer: NodeJS.Timeout;
 	let loading = false;
@@ -61,9 +73,11 @@
 		<div class="flex flex-col gap-y-4">
 			{#each prompts as prompt (prompt.promptId)}
 				<div
-					class="grid grid-cols-[minmax(0px,_1fr)_48px] gap-4 input-group input-group-divider rounded-container-token"
+					class="grid grid-cols-[minmax(0px,_1fr)_48px] gap-4 input-group input-group-divider rounded-container-token hover:cursor-pointer"
 				>
-					<div class="!block p-2">
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<div class="!block p-2" on:click={() => triggerModal(prompt)}>
 						<h5 class="h5 whitespace-nowrap overflow-hidden text-ellipsis w-[210px]">
 							{prompt.name}
 						</h5>

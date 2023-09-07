@@ -17,8 +17,8 @@
 			bind:value={signifier}
 			name="prompt"
 			id="prompt"
-			placeholder="Write your prompt...
-Hint: Select context from the miro board"
+			placeholder="Write your prompt here...
+Hint: Select items from the miro board to provide context"
 			rows="3"
 		/>
 		<RunConfigButtons {signifier} {promptType} />
