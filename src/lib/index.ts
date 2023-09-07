@@ -2,3 +2,4 @@
 export * from './models/index';
 export * from './components/index';
 export * from './database';
+export * from './helper/index';

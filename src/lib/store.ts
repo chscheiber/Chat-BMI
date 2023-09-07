@@ -2,6 +2,7 @@ import type { Prompt } from '$lib';
 import type { LlmSettings } from '$lib/models/prompts/api-prompt.model';
 import { localStorageStore } from '@skeletonlabs/skeleton';
 import { writable, type Writable } from 'svelte/store';
+import type { MiroSession } from '../routes/miro/types';
 
 function createCurrentPrompts() {
 	const initialPrompts: Prompt[] = [];
@@ -32,4 +33,4 @@ export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSe
 	streaming: true
 });
 
-export const userId = writable<string | null>(null);
+export const miroSession = writable<MiroSession | null>(null);

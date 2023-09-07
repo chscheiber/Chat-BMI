@@ -1,4 +1,4 @@
-import type { Database } from '$lib/database.types';
+import type { Database } from '$lib/database';
 type Tables = Database['public']['Tables'];
 export type PromptData = Tables['prompts']['Row'];
 export type ScenarioData = Tables['scenarios']['Row'];

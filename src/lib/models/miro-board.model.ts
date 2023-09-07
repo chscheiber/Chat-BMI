@@ -1,4 +1,6 @@
-import { userId } from '$lib/store';
+import { miroSession } from '$lib/store';
+import jwt_decode from 'jwt-decode';
+import type { MiroSession } from '../../routes/miro/types';
 
 export class MiroBoard {
 	public static async registerApp() {
@@ -8,8 +10,8 @@ export class MiroBoard {
 				url: '/miro'
 			});
 		});
-		const userInfo = await miro.board.getUserInfo();
-		userId.set(userInfo.id);
+		const session = jwt_decode<MiroSession>(await miro.board.getIdToken());
+		miroSession.set(session);
 	}
 
 	public static async writeToBoard(text: string) {

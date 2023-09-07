@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { PUBLIC_MIRO_ADMIN_ID } from '$env/static/public';
 	import { PromptFactory, type Prompt } from '$lib/models/prompts';
-	import { userId } from '$lib/store';
-	import BooleanInput from './BooleanInput.svelte';
+	import { miroSession } from '$lib/store';
 	import DesignPreview from './DesignPreview.svelte';
 	import EvaluationPreview from './EvaluationPreview.svelte';
 	import FreeFormPreview from './FreeFormPreview.svelte';
@@ -10,19 +10,19 @@
 
 	const savePrompt = async () => {
 		try {
-			// const miro = (window as any).miro;
-			// console.log('miro');
-			// const userId = (await miro.board.getUserInfo()).id;
-			// console.log(userId);
+			if ($miroSession) {
+				prompt.userId = Number($miroSession.user);
+				prompt.teamId = Number($miroSession.team);
+			}
 			const res = await fetch('/api/prompts', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ prompt, userId: $userId })
+				body: JSON.stringify({ prompt })
 			});
 
-			if (res.ok && res.body) {
+			if (res?.ok) {
 				const data = await res.json();
 				prompt = PromptFactory.createPrompt(data.type, data);
 			} else {
@@ -87,8 +87,19 @@
 	<EvaluationPreview bind:prompt />
 {/if}
 
-{#if prompt.promptId === -1}
-	<div class="flex justify-end">
-		<button class="btn variant-filled-primary" on:click={savePrompt}>Save Prompt</button>
-	</div>
-{/if}
+<div class="flex items-end gap-x-4 pb-4">
+	<label class="label">
+		<span>Visibility</span>
+		<select class="input" bind:value={prompt.visibility} disabled={prompt.promptId !== -1}>
+			<option value="private">Private</option>
+			<option value="team">Team</option>
+			<option value="public" disabled={$miroSession?.user !== PUBLIC_MIRO_ADMIN_ID}>Public</option>
+		</select>
+	</label>
+
+	{#if prompt.promptId === -1}
+		<div class="flex justify-end">
+			<button class="btn variant-filled-primary" on:click={savePrompt}>Save Prompt</button>
+		</div>
+	{/if}
+</div>

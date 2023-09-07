@@ -1,5 +1,5 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
 import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class AnalyticalPrompt extends Prompt {

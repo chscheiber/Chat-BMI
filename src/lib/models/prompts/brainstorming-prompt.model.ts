@@ -1,5 +1,5 @@
 import { Prompt } from './prompt.model';
-import type { PromptType } from './prompt.types';
+import type { PromptType } from './prompt-types';
 import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class BrainstormingPrompt extends Prompt {

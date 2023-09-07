@@ -3,6 +3,7 @@
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { load } from '../../../routes/miro/prompts/[prompt_type]/+page';
 	import RunConfigButtons from '../RunConfigButtons.svelte';
+	import { miroSession } from '$lib/store';
 
 	let prompts: Prompt[] = [];
 	let searchValue = '';
@@ -24,7 +25,9 @@
 		const queryPrompts: Prompt[] = [];
 		if (searchValue != '' && searchValue.length > 2) {
 			loading = true;
-			fetch(`/api/prompts?value=${searchValue}&limit=5`)
+			const userId = $miroSession?.user ?? -1;
+			const teamId = $miroSession?.team ?? -1;
+			fetch(`/api/prompts?value=${searchValue}&user-id=${userId}&team-id=${teamId}&limit=5`)
 				.then((res) => res.json())
 				.then((data: PromptData[]) => {
 					for (const promptData of data) {

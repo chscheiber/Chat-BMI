@@ -57,6 +57,7 @@
 		"@mirohq/miro-api": "^2.0.0",
 		"@mirohq/websdk-types": "^2.9.4",
 		"@supabase/supabase-js": "^2.33.1",
+		"jwt-decode": "^3.1.2",
 		"langchain": "^0.0.114",
 		"turndown": "^7.1.2"
 	}
