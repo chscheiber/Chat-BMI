@@ -16,6 +16,10 @@ export class ActionPrompt extends Prompt {
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
 		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
 	}
+
+	public toString(): string {
+		return super.generateString({ reasoning: this.reasoning });
+	}
 }
 
 export const ACTION_PROMPT_TYPE: PromptType = {

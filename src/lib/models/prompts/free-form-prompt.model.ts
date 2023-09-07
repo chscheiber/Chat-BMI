@@ -20,6 +20,14 @@ export class FreeFormPrompt extends Prompt {
 		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
 		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
 	}
+
+	public toString() {
+		return this.generateString({
+			reasoning: this.reasoning,
+			persona: this.persona,
+			scenario: this.scenario
+		});
+	}
 }
 
 export const FREE_FORM_PROMPT_TYPE: PromptType = {

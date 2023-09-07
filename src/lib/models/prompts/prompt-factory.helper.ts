@@ -60,7 +60,10 @@ export class PromptFactory {
 				persona_id: null,
 				scenario_id: null,
 				private: false,
-				user_id: null
+				user_id: null,
+				fts: null,
+				team_id: -1,
+				visibility: 'private'
 			};
 		}
 

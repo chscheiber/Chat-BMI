@@ -18,6 +18,10 @@ export class EvaluationPrompt extends Prompt {
 		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
 		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
 	}
+
+	public toString() {
+		return this.generateString({ reasoning: this.reasoning });
+	}
 }
 
 export const EVALUATION_PROMPT_TYPE: PromptType = {

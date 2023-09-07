@@ -13,6 +13,10 @@ export class AnalyticalPrompt extends Prompt {
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
 		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
 	}
+
+	public toString(): string {
+		return this.generateString();
+	}
 }
 
 export const ANALYTICAL_PROMPT_TYPE: PromptType = {

@@ -16,6 +16,10 @@ export class DesignPrompt extends Prompt {
 		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
 	}
+
+	public toString(): string {
+		return super.generateString({ persona: this.persona, scenario: this.scenario });
+	}
 }
 
 export const DESIGN_PROMPT_TYPE: PromptType = {
