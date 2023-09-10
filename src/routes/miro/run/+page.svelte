@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
-	import BackNav from '$lib/components/BackNav.svelte';
 	import { MiroBoard } from '$lib/models/miro-board.model';
 	import { Conversation, type Message } from '$lib/models/prompts/conversation.model';
 	import { readablestreamStore } from '$lib/readable-stream.store';
@@ -17,7 +14,8 @@
 	let newMessage = '';
 	let awaitingResponse = true;
 
-	let chatHistory: Message[] = [{ text: prompt.signifier, role: 'human' }];
+	prompt.context = $currentContext;
+	let chatHistory: Message[] = [{ text: prompt.toString(), role: 'human' }];
 	$: conversation.addMessage(chatHistory[chatHistory.length - 1]);
 
 	const runPrompt = async () => {
@@ -38,7 +36,7 @@
 				userId
 			};
 
-			console.log('request');
+			console.log(body);
 			const answer = response.request(
 				new Request(url, {
 					method: 'POST',
@@ -55,8 +53,6 @@
 			chatHistory = [...chatHistory, { text: `Error: ${err}`, role: 'system' }];
 		}
 	};
-
-	const sendResponse = async () => {};
 
 	const getModelName = (key: string) => {
 		switch (key) {
@@ -95,9 +91,9 @@
 <!-- <div class="flex flex-col mb-4">
 	<BackNav heading="Run prompt" />
 </div> -->
-<div class="max-h-[80vh] overflow-y-auto pr-4">
+<div class="max-h-[75vh] overflow-y-auto pr-4" bind:this={div}>
 	{#each chatHistory as message}
-		<div class="card p-4 variant-soft space-y-2 max-h-[30vh] overflow-y-auto mb-4" bind:this={div}>
+		<div class="card p-4 variant-soft space-y-2 mb-4">
 			{#if message.role === 'system'}
 				<header class="flex justify-between items-center">
 					<div class="flex items-center gap-x-2">
@@ -139,7 +135,7 @@
 		</div>
 	{/each}
 	{#if $response.loading}
-		<div class="card p-4 variant-soft space-y-2 max-h-[30vh] overflow-y-auto mb-4" bind:this={div}>
+		<div class="card p-4 variant-soft space-y-2 mb-4">
 			<header class="flex justify-between items-center">
 				<div class="flex items-center gap-x-2">
 					<Avatar
