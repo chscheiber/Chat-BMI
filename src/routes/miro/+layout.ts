@@ -7,7 +7,7 @@ export const load = (async () => {
 	let token: MiroSession | null = null;
 	if (browser) token = jwtDecode<MiroSession>(await miro.board.getIdToken());
 	return {
-		userId: token?.user ? Number(token.user) : -1,
-		teamId: token?.team ? Number(token.team) : -1
+		userId: token?.user ? token.user : '',
+		teamId: token?.team ? token.team : ''
 	};
 }) satisfies LayoutLoad;

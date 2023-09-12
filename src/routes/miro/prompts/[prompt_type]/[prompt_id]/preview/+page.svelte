@@ -7,6 +7,7 @@
 	import Context from './Context.svelte';
 	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
 	import { currentPrompts, newPrompt } from '$lib/store';
+	import { ROUTES } from '$lib';
 
 	export let data: PageData;
 	let prompt: Prompt;
@@ -27,7 +28,7 @@
 	buttonCompleteLabel="Run Prompt"
 	on:complete={() => {
 		currentPrompts.set(prompt);
-		goto('/miro/run');
+		goto(ROUTES.NEW_CONVERSATION);
 	}}
 >
 	<Step>

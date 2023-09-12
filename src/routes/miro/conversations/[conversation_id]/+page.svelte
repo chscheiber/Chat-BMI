@@ -5,37 +5,61 @@
 	import { currentContext, currentPrompts, miroSession, openAISettings } from '$lib/store';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
-	import type { ConversationMessageBody } from './+server';
+	import { ROUTES } from '$lib';
+	import { supabase } from '$lib/supabase';
+	import type { ConversationMessageBody } from './+server.js';
 
+	export let data;
 	const prompt = $currentPrompts[0];
-	prompt.context = $currentContext;
-	const conversation = new Conversation(prompt);
+	if (prompt) prompt.context = $currentContext;
 	const response = readablestreamStore();
 	let newMessage = '';
-	let awaitingResponse = true;
 
-	prompt.context = $currentContext;
-	let chatHistory: Message[] = [{ text: prompt.toString(), role: 'human' }];
-	$: conversation.addMessage(chatHistory[chatHistory.length - 1]);
+	const userId = $miroSession?.user ?? '';
+	const teamId = $miroSession?.team ?? '';
+	const conversation = data.conversation ?? new Conversation(prompt);
+	let chatHistory: Message[] = data.conversation?.messages ?? [
+		{ text: prompt.toString(), role: 'human' }
+	];
+	let initialRun = true;
+	$: {
+		if (!initialRun) {
+			conversation.addMessage(chatHistory[chatHistory.length - 1]);
+			supabase
+				.from('conversations')
+				.upsert(
+					{
+						id: conversation.id !== 0 ? conversation.id : undefined,
+						title: conversation.title,
+						user_id: userId,
+						team_id: teamId,
+						messages: chatHistory
+					},
+					{ onConflict: 'id' }
+				)
+				.select()
+				.then(({ data, error }) => console.log(data, error));
+		} else {
+			initialRun = false;
+		}
+	}
 
 	const runPrompt = async () => {
-		awaitingResponse = true;
 		if (newMessage !== '') chatHistory = [...chatHistory, { text: newMessage, role: 'human' }];
 		newMessage = '';
 
-		const userId = $miroSession ? Number($miroSession.user) : -1;
-
 		try {
-			let url = '/miro/run?streaming=';
+			let url = ROUTES.NEW_CONVERSATION + '?streaming=';
 			url += $openAISettings.streaming === false ? 'false' : 'true';
 
 			const body: ConversationMessageBody = {
-				promptType: prompt.type.key,
+				promptType: prompt?.type.key,
 				modelName: $openAISettings.model,
 				messages: chatHistory,
-				userId
+				userId,
+				teamId,
+				conversationId: conversation.id
 			};
-
 			console.log(body);
 			const answer = response.request(
 				new Request(url, {
@@ -48,7 +72,6 @@
 			);
 
 			chatHistory = [...chatHistory, { text: (await answer) as string, role: 'system' }];
-			awaitingResponse = false;
 		} catch (err) {
 			chatHistory = [...chatHistory, { text: `Error: ${err}`, role: 'system' }];
 		}
@@ -85,7 +108,9 @@
 		MiroBoard.writeToBoard(message);
 	};
 
-	onMount(() => runPrompt());
+	onMount(() => {
+		if (data.params.conversation_id === 'new') runPrompt();
+	});
 </script>
 
 <!-- <div class="flex flex-col mb-4">

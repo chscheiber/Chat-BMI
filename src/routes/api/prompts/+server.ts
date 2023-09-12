@@ -6,8 +6,8 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const searchValue = url.searchParams.get('value');
-	const userId = Number(url.searchParams.get('user-id'));
-	const teamId = Number(url.searchParams.get('team-id'));
+	const userId = url.searchParams.get('user-id');
+	const teamId = url.searchParams.get('team-id');
 
 	let limit = 10;
 	if (url.searchParams.get('limit')) {
@@ -15,6 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 	if (!searchValue) throw error(400, 'No search value provided');
 
+	if (!userId || !teamId) throw error(400, 'No user or team id provided');
 	let query = supabase.from('prompts').select().textSearch('fts', searchValue).limit(limit);
 	query = restrictQuery(query, userId, teamId);
 	const { data, error: e } = await query;

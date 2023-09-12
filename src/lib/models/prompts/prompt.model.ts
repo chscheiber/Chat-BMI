@@ -3,8 +3,8 @@ import { PUBLIC_DEFAULT_LLM_MODEL } from '$env/static/public';
 
 export abstract class Prompt {
 	public promptId: number;
-	public userId = -1;
-	public teamId = -1;
+	public userId = '';
+	public teamId = '';
 	public visibility: PromptVisibility = 'private';
 	public created: Date;
 	public name: string;

@@ -16,7 +16,7 @@ export class MiroBoard {
 
 	public static async writeToBoard(text: string) {
 		await miro.board.deselect();
-		const textObject = await miro.board.createText({
+		const textObject = await miro.board.createStickyNote({
 			content: `<p>${text}</p>`,
 			x: 0,
 			y: 0,

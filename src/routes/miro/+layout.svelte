@@ -50,7 +50,8 @@
 	export const links = [
 		// { icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
 		// { icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
-		{ icon: 'ion:library-outline', text: 'Prompts', href: '/miro/prompts' }
+		{ icon: 'bi:collection', text: 'All Conversations', href: '/miro/conversations' },
+		{ icon: 'ion:library-outline', text: 'Prompt Types', href: '/miro/prompts' }
 		// { icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
 		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
 		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }

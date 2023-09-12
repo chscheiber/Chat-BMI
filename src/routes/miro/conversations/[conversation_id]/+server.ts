@@ -2,16 +2,18 @@ import { OPENAI_API_KEY } from '$env/static/private';
 import type { PromptTypeKey } from '$lib';
 import type { Message } from '$lib/models/prompts/conversation.model';
 import { supabase } from '$lib/supabase';
-import { error, json, type RequestHandler } from '@sveltejs/kit';
+import { error, type RequestHandler } from '@sveltejs/kit';
 import { CallbackManager } from 'langchain/callbacks';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema';
+import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from 'langchain/schema';
 
 export type ConversationMessageBody = {
+	conversationId: number;
 	messages: Message[];
-	promptType: PromptTypeKey;
+	promptType?: PromptTypeKey;
 	modelName: string;
-	userId: number;
+	userId: string;
+	teamId: string;
 };
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -24,7 +26,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		throw error(400, 'No OpenAI API key provided');
 	}
 
-	console.log('streaming', streaming);
 	if (streaming) {
 		return streamResponse(body, key);
 	}
@@ -42,7 +43,7 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 					handleLLMNewToken: async (token: string) => controller.enqueue(token)
 				})
 			});
-			await callChain(body.messages, body.promptType, chat);
+			await callChain(body.messages, chat, body.promptType);
 			try {
 				controller.close();
 			} catch {
@@ -65,29 +66,34 @@ const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
 		maxTokens: -1
 	});
 
-	const response = await callChain(body.messages, body.promptType, chat);
+	const response = await callChain(body.messages, chat, body.promptType);
 	// return text(response.content, { status: 200 });
 	return new Response(response.content, {
 		headers: { 'Content-Type': 'text/plain' }
 	});
 };
 
-const callChain = async (messages: Message[], type: PromptTypeKey, chat: ChatOpenAI) => {
-	const { data, error: err } = await supabase
-		.from('prompt_types')
-		.select()
-		.eq('key', type)
-		.single();
+const callChain = async (messages: Message[], chat: ChatOpenAI, type?: PromptTypeKey) => {
+	let requestMessages: BaseMessage[] = [];
+	if (type) {
+		const { data, error: err } = await supabase
+			.from('prompt_types')
+			.select()
+			.eq('key', type)
+			.single();
 
-	if (err) throw error(500, err?.message);
-	if (!data?.system_prompt) throw error(500, 'No system prompt found');
-
-	const chainCall = await chat.call([
-		new SystemMessage(data.system_prompt),
+		if (err) throw error(500, err?.message);
+		if (!data?.system_prompt) throw error(500, 'No system prompt found');
+		requestMessages.push(new SystemMessage(data.system_prompt));
+	}
+	requestMessages = [
+		...requestMessages,
 		...messages.map((message) =>
 			message.role === 'human' ? new HumanMessage(message.text) : new AIMessage(message.text)
 		)
-	]);
+	];
+
+	const chainCall = await chat.call(requestMessages);
 	return chainCall;
 
 	// const chain = new LLMChain({

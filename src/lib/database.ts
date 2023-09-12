@@ -9,6 +9,36 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      conversations: {
+        Row: {
+          created_at: string
+          id: number
+          last_modified: string
+          messages: Json
+          team_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          last_modified?: string
+          messages?: Json
+          team_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          last_modified?: string
+          messages?: Json
+          team_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           content: string | null
@@ -80,9 +110,9 @@ export interface Database {
           private: boolean
           scenario_id: number | null
           signifier: string
-          team_id: number | null
+          team_id: string | null
           type: string
-          user_id: number | null
+          user_id: string | null
           visibility: string | null
         }
         Insert: {
@@ -98,9 +128,9 @@ export interface Database {
           private?: boolean
           scenario_id?: number | null
           signifier: string
-          team_id?: number | null
+          team_id?: string | null
           type: string
-          user_id?: number | null
+          user_id?: string | null
           visibility?: string | null
         }
         Update: {
@@ -116,9 +146,9 @@ export interface Database {
           private?: boolean
           scenario_id?: number | null
           signifier?: string
-          team_id?: number | null
+          team_id?: string | null
           type?: string
-          user_id?: number | null
+          user_id?: string | null
           visibility?: string | null
         }
         Relationships: [

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { openAISettings } from '$lib/store';
 	import type { PageData } from './$types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
@@ -13,6 +14,7 @@
 	const submitForm = (e: Event) => {
 		if (browser) {
 			openAISettings.set(llmSettings);
+			goto('/miro');
 			toastStore.trigger({ message: 'Settings saved', background: 'variant-filled-success' });
 		}
 	};
