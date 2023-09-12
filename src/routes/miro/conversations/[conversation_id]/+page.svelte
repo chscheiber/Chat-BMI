@@ -33,7 +33,8 @@
 						title: conversation.title,
 						user_id: userId,
 						team_id: teamId,
-						messages: chatHistory
+						messages: chatHistory,
+						last_modified: new Date().toISOString()
 					},
 					{ onConflict: 'id' }
 				)
