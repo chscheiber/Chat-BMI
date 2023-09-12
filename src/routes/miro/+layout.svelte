@@ -7,7 +7,8 @@
 		Toast,
 		getDrawerStore,
 		initializeStores,
-		type DrawerSettings
+		type DrawerSettings,
+		ProgressRadial
 	} from '@skeletonlabs/skeleton';
 
 	import { browser } from '$app/environment';
@@ -16,6 +17,7 @@
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
+	import { navigating } from '$app/stores';
 
 	export let data: LayoutData;
 
@@ -117,7 +119,13 @@
 
 	<!-- Router Slot -->
 	<div class="app-body p-6 h-[90vh] overflow-y-auto flex flex-col">
-		<slot />
+		{#if $navigating}
+			<div class=" h-[100%] grid place-items-center">
+				<ProgressRadial width={'w-20'} stroke={100} class="p-2" />
+			</div>
+		{:else}
+			<slot />
+		{/if}
 	</div>
 	<!-- ---- / ---- -->
 	<!-- <svelte:fragment slot="pageFooter">Page Footer</svelte:fragment> -->

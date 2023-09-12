@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DataList from '$lib/components/DataList/DataList.svelte';
-	import type { DataListItem, DataListSettings } from '$lib/components/DataList/data-list';
+	import { navigating } from '$app/stores';
 	import ConversationHistory from '$lib/components/StartingPage/ConversationHistory.svelte';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
