@@ -26,6 +26,8 @@ export class MiroContext {
 		this.contextItems = {};
 		this.miroContent = '';
 
+		boardItems = boardItems?.filter((item) => item.type === 'sticky_note' || item.type === 'frame');
+
 		if (!boardItems || boardItems.length === 0) {
 			currentContext.set('');
 			return '';
