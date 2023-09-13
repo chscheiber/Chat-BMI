@@ -73,21 +73,22 @@ const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
 	});
 };
 
-const callChain = async (messages: Message[], chat: ChatOpenAI, type?: PromptTypeKey) => {
-	let requestMessages: BaseMessage[] = [];
-	if (type) {
-		const { data, error: err } = await supabase
-			.from('prompt_types')
-			.select()
-			.eq('key', type)
-			.single();
+const callChain = async (
+	messages: Message[],
+	chat: ChatOpenAI,
+	type: PromptTypeKey = 'freeForm'
+) => {
+	const { data, error: err } = await supabase
+		.from('prompt_types')
+		.select()
+		.eq('key', type)
+		.single();
 
-		if (err) throw error(500, err?.message);
-		if (!data?.system_prompt) throw error(500, 'No system prompt found');
-		requestMessages.push(new SystemMessage(data.system_prompt));
-	}
-	requestMessages = [
-		...requestMessages,
+	if (err) throw error(500, err?.message);
+	if (!data?.system_prompt) throw error(500, 'No system prompt found');
+
+	const requestMessages: BaseMessage[] = [
+		new SystemMessage(data.system_prompt),
 		...messages.map((message) =>
 			message.role === 'human' ? new HumanMessage(message.text) : new AIMessage(message.text)
 		)
@@ -95,25 +96,4 @@ const callChain = async (messages: Message[], chat: ChatOpenAI, type?: PromptTyp
 
 	const chainCall = await chat.call(requestMessages);
 	return chainCall;
-
-	// const chain = new LLMChain({
-	// 	llm: chat,
-	// 	prompt: chatPrompt
-	// });
-
-	// return await chain.call({});
 };
-
-// const generateHumanTemplate = (prompt: ApiPrompt) => {
-// 	let template: string = prompt.signifier + '\n';
-// 	const persona = prompt.persona?.trim();
-// 	const scenario = prompt.scenario?.trim();
-// 	const context = prompt.context?.trim();
-
-// 	if (persona && persona !== '') template += `Act as: ${persona}\n`;
-// 	if (scenario && scenario !== '') template += `Imagine the following scenario:\n"${scenario}"\n`;
-
-// 	if (context) template += `Context:\n "${context}"\n`;
-
-// 	return template;
-// };

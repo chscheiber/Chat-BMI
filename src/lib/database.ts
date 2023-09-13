@@ -184,6 +184,36 @@ export interface Database {
         }
         Relationships: []
       }
+      templates: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          image_url: string | null
+          items: Json | null
+          source: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: number
+          image_url?: string | null
+          items?: Json | null
+          source?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: number
+          image_url?: string | null
+          items?: Json | null
+          source?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string | null

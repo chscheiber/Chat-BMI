@@ -19,10 +19,12 @@
 	const conversations = data.conversations;
 </script>
 
-<div class="flex flex-col flex-1 justify-between">
-	<ConversationHistory {conversations} />
-	<div class="flex flex-col gap-y-4 mt-auto">
+<div class="flex flex-col flex-1 justify-end gap-y-4 h-[100%]">
+	<div class="flex flex-col gap-y-4 overflow-y-auto">
+		<ConversationHistory {conversations} />
 		<PromptFinder />
+	</div>
+	<div class="mt-auto">
 		<RunPrompt />
 	</div>
 </div>

@@ -119,7 +119,7 @@
 </div> -->
 <div class="max-h-[75vh] overflow-y-auto pr-4" bind:this={div}>
 	{#each chatHistory as message}
-		<div class="card p-4 variant-soft space-y-2 mb-4">
+		<div class="card p-4 space-y-2 mb-4">
 			{#if message.role === 'system'}
 				<header class="flex justify-between items-center">
 					<div class="flex items-center gap-x-2">
@@ -133,12 +133,12 @@
 					</div>
 					<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 				</header>
-				<p class="whitespace-pre-line text-sm">
+				<p class="whitespace-pre-line text-sm text-black">
 					{message.text}
 				</p>
 				<button
 					on:click={() => exportResponse(message.text)}
-					class="btn variant-filled-primary"
+					class="btn btn-sm variant-filled-primary"
 					title="Export content to Miro Board">Export to Miro Board</button
 				>
 			{:else}
@@ -154,14 +154,14 @@
 					/> -->
 					</div>
 				</header>
-				<p class="whitespace-pre-line text-sm">
+				<p class="whitespace-pre-line text-sm text-black">
 					{message.text}
 				</p>
 			{/if}
 		</div>
 	{/each}
 	{#if $response.loading}
-		<div class="card p-4 variant-soft space-y-2 mb-4">
+		<div class="card p-4 space-y-2 mb-4">
 			<header class="flex justify-between items-center">
 				<div class="flex items-center gap-x-2">
 					<Avatar

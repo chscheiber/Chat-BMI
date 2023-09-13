@@ -7,7 +7,7 @@
 	export let showTitle = true;
 </script>
 
-<div class="card p-4 overflow-y-auto">
+<div class="card p-4">
 	{#if showTitle}
 		<a href={ROUTES.CONVERSATION}><h4 class="h4 mb-4">Latest Conversations</h4></a>
 	{/if}
@@ -32,7 +32,7 @@
 				</div>
 			</div>
 			{#if i < conversations.length - 1}
-				<hr class="my-2" />
+				<hr class="my-2 !border-surface-400" />
 			{/if}
 		{/each}
 	{:else}
