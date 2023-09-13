@@ -1,5 +1,5 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
 import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class AnalyticalPrompt extends Prompt {
@@ -12,6 +12,10 @@ export class AnalyticalPrompt extends Prompt {
 		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
 		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
+	}
+
+	public toString(): string {
+		return this.generateString();
 	}
 }
 

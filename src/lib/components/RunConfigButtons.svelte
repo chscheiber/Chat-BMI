@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { ROUTES } from '$lib/constants';
 	import { Prompt, PromptFactory, type PromptTypeKey } from '$lib/models';
 	import { currentContext, currentPrompts, newPrompt } from '$lib/store';
 	import Icon from '@iconify/svelte';
@@ -25,7 +26,7 @@
 			prompt = PromptFactory.emptyPrompt(promptType, { signifier });
 		}
 		currentPrompts.set(prompt);
-		goto('/miro/run');
+		goto(ROUTES.NEW_CONVERSATION);
 	};
 </script>
 

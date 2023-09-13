@@ -13,7 +13,7 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"env-test": "",
-		"create-types": "dotenv -- cross-var npx supabase gen types typescript --db-url %SUPABASE_POSTGRES_URL% > src/lib/database.types.ts"
+		"create-types": "dotenv -- cross-var npx supabase gen types typescript --db-url %SUPABASE_POSTGRES_URL% > src/lib/database.ts"
 	},
 	"devDependencies": {
 		"@iconify/json": "^2.2.93",
@@ -55,7 +55,9 @@
 	"type": "module",
 	"dependencies": {
 		"@mirohq/miro-api": "^2.0.0",
-		"@supabase/supabase-js": "^2.26.0",
+		"@mirohq/websdk-types": "^2.9.4",
+		"@supabase/supabase-js": "^2.33.1",
+		"jwt-decode": "^3.1.2",
 		"langchain": "^0.0.114",
 		"turndown": "^7.1.2"
 	}

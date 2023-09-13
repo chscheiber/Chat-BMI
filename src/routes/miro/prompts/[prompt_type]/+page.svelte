@@ -10,7 +10,6 @@
 	// 	const context = new MiroContext(items);
 	// 	prompt.context = await context.miroContent;
 	// 	currentPrompts.set(prompt);
-	// 	goto(`/miro/run`);
 	// };
 
 	const settings: DataListSettings = {

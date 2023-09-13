@@ -1,5 +1,5 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
 import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class FreeFormPrompt extends Prompt {
@@ -19,6 +19,14 @@ export class FreeFormPrompt extends Prompt {
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
 		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
 		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
+	}
+
+	public toString() {
+		return this.generateString({
+			reasoning: this.reasoning,
+			persona: this.persona,
+			scenario: this.scenario
+		});
 	}
 }
 

@@ -5,7 +5,7 @@ import { DESIGN_PROMPT_TYPE, DesignPrompt } from './design-prompt.model';
 import { EVALUATION_PROMPT_TYPE, EvaluationPrompt } from './evaluation-prompt.model';
 import { FREE_FORM_PROMPT_TYPE, FreeFormPrompt } from './free-form-prompt.model';
 import type { Prompt } from './prompt.model';
-import type { PromptType, PromptTypeKey, PromptData } from './prompt.types';
+import type { PromptType, PromptTypeKey, PromptData } from './prompt-types';
 
 /**
  * All Prompt Types
@@ -60,7 +60,10 @@ export class PromptFactory {
 				persona_id: null,
 				scenario_id: null,
 				private: false,
-				user_id: null
+				user_id: null,
+				fts: null,
+				team_id: -1,
+				visibility: 'private'
 			};
 		}
 

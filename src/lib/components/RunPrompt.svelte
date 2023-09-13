@@ -1,18 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { PROMPT_TYPES, PromptFactory, type PromptTypeKey } from '$lib/models';
-	import { currentContext, newPrompt } from '$lib/store';
+	import { PROMPT_TYPES, type PromptTypeKey } from '$lib/models';
 	import RunConfigButtons from './RunConfigButtons.svelte';
 	let signifier = '';
 	let promptType: PromptTypeKey = 'freeForm';
-
-	$: selectedClass = $currentContext !== '' ? 'variant-filled-success ' : 'variant-filled-warning';
-
-	const createNewPrompt = () => {
-		const prompt = PromptFactory.emptyPrompt(promptType, { signifier });
-		newPrompt.set(prompt);
-		goto(`/miro/prompts/${promptType}/new/preview`);
-	};
 </script>
 
 <div class="flex flex-col input-group rounded-container-token">
@@ -27,8 +17,8 @@
 			bind:value={signifier}
 			name="prompt"
 			id="prompt"
-			placeholder="Write your prompt...
-Hint: Select context from the miro board"
+			placeholder="Write your prompt here...
+Hint: Select items from the miro board to provide context"
 			rows="3"
 		/>
 		<RunConfigButtons {signifier} {promptType} />

@@ -1,5 +1,5 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt.types';
+import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
 import { SYSTEM_PROMPTS } from './system-prompts.helper';
 
 export class DesignPrompt extends Prompt {
@@ -15,6 +15,10 @@ export class DesignPrompt extends Prompt {
 
 		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
 		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
+	}
+
+	public toString(): string {
+		return super.generateString({ persona: this.persona, scenario: this.scenario });
 	}
 }
 

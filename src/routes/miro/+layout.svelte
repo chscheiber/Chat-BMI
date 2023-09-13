@@ -1,13 +1,23 @@
 <script lang="ts">
-	import { AppBar, AppShell, Toast, initializeStores } from '@skeletonlabs/skeleton';
-	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
-	import type { DrawerSettings, DrawerStore } from '@skeletonlabs/skeleton';
-	import type { LayoutData } from './$types';
-	import Icon from '@iconify/svelte';
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import {
+		AppBar,
+		AppShell,
+		Drawer,
+		Modal,
+		Toast,
+		getDrawerStore,
+		initializeStores,
+		type DrawerSettings,
+		ProgressRadial
+	} from '@skeletonlabs/skeleton';
+
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { openAISettings } from '$lib/store';
+	import Icon from '@iconify/svelte';
+	import { onMount } from 'svelte';
+	import type { LayoutData } from './$types';
+	import { navigating } from '$app/stores';
 
 	export let data: LayoutData;
 
@@ -41,8 +51,9 @@
 
 	export const links = [
 		// { icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
-		// { icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
-		{ icon: 'ion:library-outline', text: 'Prompts', href: '/miro/prompts' }
+		{ icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
+		{ icon: 'bi:collection', text: 'All Conversations', href: '/miro/conversations' },
+		{ icon: 'ion:library-outline', text: 'Prompt Types', href: '/miro/prompts' }
 		// { icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
 		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
 		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
@@ -84,6 +95,7 @@
 	{/each}
 </Drawer>
 <Toast />
+<Modal />
 <AppShell>
 	<svelte:fragment slot="header"
 		><AppBar background="bg-surface-100">
@@ -107,7 +119,13 @@
 
 	<!-- Router Slot -->
 	<div class="app-body p-6 h-[90vh] overflow-y-auto flex flex-col">
-		<slot />
+		{#if $navigating}
+			<div class=" h-[100%] grid place-items-center">
+				<ProgressRadial width={'w-20'} stroke={100} class="p-2" />
+			</div>
+		{:else}
+			<slot />
+		{/if}
 	</div>
 	<!-- ---- / ---- -->
 	<!-- <svelte:fragment slot="pageFooter">Page Footer</svelte:fragment> -->
