@@ -11,6 +11,6 @@ export const load = (async ({ parent }) => {
 		.eq('user_id', userId)
 		.order('last_modified', { ascending: false });
 
-	const conversations = (data ?? []).map((conversation) => new Conversation(conversation));
+	const conversations = (data ?? []).map((conversation) => Conversation.fromDb(conversation));
 	return { conversations };
 }) satisfies PageLoad;

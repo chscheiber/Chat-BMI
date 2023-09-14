@@ -1,36 +1,38 @@
 <script lang="ts">
+	import { Prompt, ROUTES } from '$lib';
 	import { MiroBoard } from '$lib/models/miro-board.model';
-	import { Conversation, type Message } from '$lib/models/prompts/conversation.model';
+	import type { Message } from '$lib/models/prompts/conversation.model';
 	import { readablestreamStore } from '$lib/readable-stream.store';
-	import { currentContext, currentPrompts, miroSession, openAISettings } from '$lib/store';
-	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
-	import { ROUTES } from '$lib';
+	import { currentContext, miroSession, openAISettings } from '$lib/store';
 	import { supabase } from '$lib/supabase';
-	import type { ConversationMessageBody } from './+server.js';
+	import {
+		Avatar,
+		ProgressRadial,
+		getModalStore,
+		type ModalSettings
+	} from '@skeletonlabs/skeleton';
+	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
+	import type { ConversationMessageBody } from '../+server.js';
+	import Icon from '@iconify/svelte';
 
 	export let data;
-	const prompt = $currentPrompts[0];
-	if (prompt) prompt.context = $currentContext;
 	const response = readablestreamStore();
 	let newMessage = '';
 
 	const userId = $miroSession?.user ?? '';
 	const teamId = $miroSession?.team ?? '';
-	const conversation = data.conversation ?? new Conversation(prompt);
-	let chatHistory: Message[] = data.conversation?.messages ?? [
-		{ text: prompt.toString(), role: 'human' }
-	];
+	let chatHistory: Message[] = data.conversation.messages;
+
 	let initialRun = true;
 	$: {
 		if (!initialRun) {
-			conversation.addMessage(chatHistory[chatHistory.length - 1]);
+			data.conversation.addMessage(chatHistory[chatHistory.length - 1]);
 			supabase
 				.from('conversations')
 				.upsert(
 					{
-						id: conversation.id !== 0 ? conversation.id : undefined,
-						title: conversation.title,
+						id: data.conversation.id !== 0 ? data.conversation.id : undefined,
+						title: data.conversation.title,
 						user_id: userId,
 						team_id: teamId,
 						messages: chatHistory,
@@ -39,29 +41,34 @@
 					{ onConflict: 'id' }
 				)
 				.select()
-				.then(({ data, error }) => console.log(data, error));
+				.then(({ data: d, error: e }) => console.log(`Conversation ${data.conversation.id}`, d, e));
 		} else {
 			initialRun = false;
 		}
 	}
 
-	const runPrompt = async () => {
-		if (newMessage !== '') chatHistory = [...chatHistory, { text: newMessage, role: 'human' }];
-		newMessage = '';
+	const runPrompt = async (prompt?: Prompt) => {
+		if (!prompt && newMessage !== '') {
+			chatHistory = [...chatHistory, { text: newMessage, role: 'human', promptType: 'freeForm' }];
+			newMessage = '';
+		} else if (prompt) {
+			chatHistory = [
+				...chatHistory,
+				{ text: prompt.toString(), role: 'human', promptType: prompt.type.key }
+			];
+		}
 
 		try {
-			let url = ROUTES.NEW_CONVERSATION + '?streaming=';
+			let url = ROUTES.CONVERSATION + '?streaming=';
 			url += $openAISettings.streaming === false ? 'false' : 'true';
 
 			const body: ConversationMessageBody = {
-				promptType: prompt?.type.key,
 				modelName: $openAISettings.model,
 				messages: chatHistory,
 				userId,
 				teamId,
-				conversationId: conversation.id
+				conversationId: data.conversation.id
 			};
-			console.log(body);
 			const answer = response.request(
 				new Request(url, {
 					method: 'POST',
@@ -72,9 +79,15 @@
 				})
 			);
 
-			chatHistory = [...chatHistory, { text: (await answer) as string, role: 'system' }];
+			chatHistory = [
+				...chatHistory,
+				{ text: (await answer) as string, role: 'system', promptType: 'freeForm' }
+			];
 		} catch (err) {
-			chatHistory = [...chatHistory, { text: `Error: ${err}`, role: 'system' }];
+			chatHistory = [
+				...chatHistory,
+				{ text: `Error: ${err}`, role: 'system', promptType: 'freeForm' }
+			];
 		}
 	};
 
@@ -109,15 +122,25 @@
 		MiroBoard.writeToBoard(message);
 	};
 
+	const modalStore = getModalStore();
+	const triggerModal = (prompt: Prompt) => {
+		const modal: ModalSettings = {
+			type: 'component',
+			component: 'promptModal',
+			meta: { prompt }
+		};
+		modalStore.trigger(modal);
+	};
+
 	onMount(() => {
-		if (data.params.conversation_id === 'new') runPrompt();
+		console.log(data.conversation);
+		if (chatHistory[chatHistory.length - 1].role === 'human') runPrompt();
 	});
+
+	const maxMessageHeight = data.conversation.collection?.prompts ? 'max-h-[55vh]' : 'max-h-[77vh]';
 </script>
 
-<!-- <div class="flex flex-col mb-4">
-	<BackNav heading="Run prompt" />
-</div> -->
-<div class="max-h-[75vh] overflow-y-auto pr-4" bind:this={div}>
+<div class="{maxMessageHeight} overflow-y-auto pr-4" bind:this={div}>
 	{#each chatHistory as message}
 		<div class="card-soft p-4 space-y-2 mb-4">
 			{#if message.role === 'system'}
@@ -127,9 +150,7 @@
 							src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
 							width="w-8"
 						/>
-						{#if prompt}
-							<p class="font-bold">{getModelName($openAISettings.model)}</p>
-						{/if}
+						<p class="font-bold">{getModelName($openAISettings.model)}</p>
 					</div>
 					<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 				</header>
@@ -168,9 +189,7 @@
 						src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
 						width="w-8"
 					/>
-					{#if prompt}
-						<p class="font-bold">{getModelName($openAISettings.model)}</p>
-					{/if}
+					<p class="font-bold">{getModelName($openAISettings.model)}</p>
 				</div>
 				<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 			</header>
@@ -184,33 +203,32 @@
 		</div>
 	{/if}
 </div>
-<!-- <p class="whitespace-pre-line text-sm">
-	{#if $response.loading && $response.text === ''}
-		<ProgressRadial width={'w-10'} stroke={100} />
-	{:else if $response.loading}
-		{$response.text}
-	{:else}
-		{reply}
-	{/if}
-</p>
-{#if !awaitingResponse}
-	<button
-		on:click={exportResponse}
-		class="btn variant-filled-primary"
-		title="Export content to Miro Board">Export to Miro Board</button
-	>
-{/if} -->
-<!-- <div class="grid grid-cols-[1fr_auto] gap-2">
-	<div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
-		<header class="flex justify-between items-center">
-			<p class="font-bold">{bubble.name}</p>
-			<small class="opacity-50">{bubble.timestamp}</small>
-		</header>
-		<p>{bubble.message}</p>
-	</div>
-	<Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" width="w-12" />
-</div> -->
 
+{#if data.conversation.collection?.prompts}
+	<ol class="list max-h-[20vh] my-4 overflow-y-auto">
+		{#each data.conversation.collection.prompts as prompt, i}
+			<li class="card-soft !rounded-lg p-3">
+				<span class="badge bg-primary-500"
+					><button on:click={() => runPrompt(prompt)}>
+						<Icon icon="ion:play-outline" />
+					</button></span
+				>
+				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<div
+					class="flex flex-col overflow-hidden hover:cursor-pointer"
+					on:click={() => triggerModal(prompt)}
+				>
+					<span class="whitespace-nowrap text-ellipsis overflow-hidden">
+						{prompt.signifier}
+					</span>
+					<span class="text-sm italic !text-gray-700">{prompt.type.name}</span>
+				</div>
+			</li>
+		{/each}
+	</ol>
+{/if}
 <div class="input-group input-group-divider grid-cols-[1fr_auto] rounded-container-token mt-auto">
 	<textarea
 		bind:value={newMessage}
@@ -221,7 +239,7 @@
 		placeholder="Write a response..."
 		rows="3"
 	/>
-	<button class="variant-filled-primary" disabled={newMessage == ''} on:click={runPrompt}
+	<button class="variant-filled-primary" disabled={newMessage == ''} on:click={() => runPrompt()}
 		>Send</button
 	>
 </div>

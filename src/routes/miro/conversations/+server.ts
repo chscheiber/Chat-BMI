@@ -10,7 +10,6 @@ import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from 'langchain/s
 export type ConversationMessageBody = {
 	conversationId: number;
 	messages: Message[];
-	promptType?: PromptTypeKey;
 	modelName: string;
 	userId: string;
 	teamId: string;
@@ -43,7 +42,7 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 					handleLLMNewToken: async (token: string) => controller.enqueue(token)
 				})
 			});
-			await callChain(body.messages, chat, body.promptType);
+			await callChain(body.messages, chat);
 			try {
 				controller.close();
 			} catch {
@@ -66,22 +65,21 @@ const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
 		maxTokens: -1
 	});
 
-	const response = await callChain(body.messages, chat, body.promptType);
+	const response = await callChain(body.messages, chat);
 	// return text(response.content, { status: 200 });
 	return new Response(response.content, {
 		headers: { 'Content-Type': 'text/plain' }
 	});
 };
 
-const callChain = async (
-	messages: Message[],
-	chat: ChatOpenAI,
-	type: PromptTypeKey = 'freeForm'
-) => {
+const callChain = async (messages: Message[], chat: ChatOpenAI) => {
+	const humanMessages = messages.filter((message) => message.role === 'human');
+	const promptType = humanMessages[humanMessages.length - 1].promptType as PromptTypeKey;
+
 	const { data, error: err } = await supabase
 		.from('prompt_types')
 		.select()
-		.eq('key', type)
+		.eq('key', promptType)
 		.single();
 
 	if (err) throw error(500, err?.message);

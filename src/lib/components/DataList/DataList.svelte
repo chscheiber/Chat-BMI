@@ -8,10 +8,10 @@
 </script>
 
 {#if settings.add && settings.add.allow}
-	<div class="flex gap-x-2 p-2 mb-4 items-center border-gray-600 bg-gray-100/50 rounded-md">
+	<div class="card flex gap-x-4 p-4 mb-4 items-center">
 		<button
 			type="button"
-			class="btn-icon btn-icon-sm variant-filled mx-2"
+			class="btn-icon btn-icon-sm variant-filled"
 			on:click={() => {
 				goto(settings.add?.path ?? 'miro');
 			}}><Icon icon="ion:plus" /></button
@@ -21,7 +21,7 @@
 {/if}
 
 {#if items.length > 0}
-	<div class="flex flex-col gap-y-4">
+	<div class="card-soft p-4 flex flex-col gap-y-4">
 		{#each items as item, i}
 			<a href={item.href}>
 				<div class="flex flex-col">

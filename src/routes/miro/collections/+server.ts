@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { Visibility } from '$lib/types';
 import { supabase } from '$lib/supabase';
@@ -14,7 +14,7 @@ export type NewCollectionBody = {
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body: NewCollectionBody = await request.json();
-	const { data, error } = await supabase
+	const { data, error: err } = await supabase
 		.from('collections')
 		.insert({
 			title: body.title,
@@ -26,11 +26,14 @@ export const POST: RequestHandler = async ({ request }) => {
 		.select('id')
 		.single();
 
-	if (!data) return json({ success: false });
+	if (!data) return json({ message: 'Failed to retrieve collection id' }, { status: 500 });
+	if (err) return json({ message: err }, { status: 500 });
 
-	const { data: _, error: __ } = await supabase
+	const { data: mappingData, error: mappingErr } = await supabase
 		.from('prompt_collection_mapping')
 		.insert(body.promptIds.map((id) => ({ prompt: id, collection: data.id })));
-	console.log(_, __);
-	return json({ success: true });
+
+	if (mappingErr) return json({ message: mappingErr }, { status: 500 });
+
+	return json({ message: 'success' });
 };

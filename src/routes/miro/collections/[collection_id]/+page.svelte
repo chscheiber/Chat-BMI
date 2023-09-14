@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
-	import { ROUTES, type Prompt } from '$lib';
+	import { ROUTES, type Prompt, Collection } from '$lib';
 	import BackNav from '$lib/components/BackNav.svelte';
 	import type { DeleteCollectionBody } from './+server';
-	import { loading, miroSession } from '$lib/store';
+	import { loading, miroSession, newConversation } from '$lib/store';
 	import { goto } from '$app/navigation';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
 
 	export let data: PageData;
 
@@ -58,6 +59,17 @@
 			loading.set(false);
 		}
 	};
+
+	const runCollection = async () => {
+		const conversation = new Conversation({
+			userId: $miroSession?.user ?? '',
+			teamId: $miroSession?.team ?? '',
+			title: data.collection.title,
+			collection: data.collection
+		});
+		newConversation.set(conversation);
+		goto(ROUTES.NEW_CONVERSATION);
+	};
 </script>
 
 <BackNav heading="Collections" />
@@ -82,6 +94,6 @@
 	</ol>
 	<div class="flex justify-between mt-4">
 		<button class="btn variant-filled-error" on:click={deleteCollection}>Delete</button>
-		<button class="btn variant-filled-primary">Run</button>
+		<button class="btn variant-filled-primary" on:click={runCollection}>Run</button>
 	</div>
 </div>

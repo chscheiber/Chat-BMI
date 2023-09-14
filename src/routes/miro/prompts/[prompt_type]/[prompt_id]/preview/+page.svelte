@@ -6,8 +6,9 @@
 	import type { PageData } from './$types';
 	import Context from './Context.svelte';
 	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
-	import { currentPrompts, newPrompt } from '$lib/store';
+	import { currentPrompts, newConversation, newPrompt } from '$lib/store';
 	import { ROUTES } from '$lib';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
 
 	export let data: PageData;
 	let prompt: Prompt;
@@ -27,7 +28,13 @@
 <Stepper
 	buttonCompleteLabel="Run Prompt"
 	on:complete={() => {
-		currentPrompts.set(prompt);
+		const conversation = new Conversation({
+			prompt: prompt,
+			title: prompt.signifier,
+			userId: prompt.userId,
+			teamId: prompt.teamId
+		});
+		newConversation.set(conversation);
 		goto(ROUTES.NEW_CONVERSATION);
 	}}
 >

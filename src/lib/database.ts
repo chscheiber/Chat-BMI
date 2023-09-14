@@ -41,6 +41,7 @@ export interface Database {
       }
       conversations: {
         Row: {
+          collection: number | null
           created_at: string
           id: number
           last_modified: string
@@ -50,6 +51,7 @@ export interface Database {
           user_id: string
         }
         Insert: {
+          collection?: number | null
           created_at?: string
           id?: number
           last_modified?: string
@@ -59,6 +61,7 @@ export interface Database {
           user_id: string
         }
         Update: {
+          collection?: number | null
           created_at?: string
           id?: number
           last_modified?: string
@@ -67,7 +70,14 @@ export interface Database {
           title?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "conversations_collection_fkey"
+            columns: ["collection"]
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       documents: {
         Row: {

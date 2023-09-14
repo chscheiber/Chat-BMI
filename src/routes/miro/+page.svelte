@@ -14,7 +14,9 @@
 			const context = new MiroContext();
 			context.listenToUpdates();
 		}
-	} catch {}
+	} catch {
+		/* emtpy */
+	}
 
 	const conversations = data.conversations;
 </script>

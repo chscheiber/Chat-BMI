@@ -2,7 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { ROUTES } from '$lib/constants';
 	import { Prompt, PromptFactory, type PromptTypeKey } from '$lib/models';
-	import { currentContext, currentPrompts, newPrompt } from '$lib/store';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
+	import { currentContext, currentPrompts, newConversation, newPrompt } from '$lib/store';
 	import Icon from '@iconify/svelte';
 
 	$: selectedClass = $currentContext !== '' ? 'variant-filled-success ' : 'variant-filled-tertiary';
@@ -11,7 +12,6 @@
 	export let promptType: PromptTypeKey = 'freeForm';
 	export let prompt: Prompt | null = null;
 	const configPrompt = () => {
-		console.log(prompt);
 		if (prompt) {
 			goto(`/miro/prompts/${prompt.type.key}/${prompt.promptId}/preview`);
 		} else {
@@ -25,7 +25,14 @@
 		if (!prompt) {
 			prompt = PromptFactory.emptyPrompt(promptType, { signifier });
 		}
-		currentPrompts.set(prompt);
+		const conversation = new Conversation({
+			prompt: prompt,
+			title: prompt.signifier,
+			userId: prompt.userId,
+			teamId: prompt.teamId
+		});
+		newConversation.set(conversation);
+		// currentPrompts.set(prompt);
 		goto(ROUTES.NEW_CONVERSATION);
 	};
 </script>

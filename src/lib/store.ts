@@ -3,6 +3,7 @@ import type { LlmSettings } from '$lib/models/prompts/api-prompt.model';
 import { localStorageStore } from '@skeletonlabs/skeleton';
 import { writable, type Writable } from 'svelte/store';
 import type { MiroSession } from '../routes/miro/types';
+import type { Conversation } from './models/prompts/conversation.model';
 
 function createCurrentPrompts() {
 	const initialPrompts: Prompt[] = [];
@@ -25,6 +26,7 @@ function createCurrentPrompts() {
 
 export const newPrompt = writable<Prompt | null>(null);
 export const currentPrompts = createCurrentPrompts();
+export const newConversation = writable<Conversation | null>(null);
 export const currentContext = writable<string>('');
 export const loading = writable<boolean>(false);
 

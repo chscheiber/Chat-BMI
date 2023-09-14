@@ -74,28 +74,28 @@
 		};
 		try {
 			loading.set(true);
-			const response = await fetch('/miro/collections', {
+			const response = await fetch(ROUTES.COLLECTIONS, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(body)
 			});
-			const { success } = await response.json();
-			if (success) {
+			const { message } = await response.json();
+			if (response.ok) {
 				toastStore.trigger({
 					message: 'Collection created successfully',
 					background: 'variant-filled-success'
 				});
 				goto(ROUTES.COLLECTIONS);
 			} else {
-				toastStore.trigger({
-					message: 'Collection could not be created',
-					background: 'variant-filled-error'
-				});
+				throw new Error(message);
 			}
 		} catch (error) {
-			console.error(error);
+			toastStore.trigger({
+				message: '' + error,
+				background: 'variant-filled-error'
+			});
 		} finally {
 			loading.set(false);
 		}
