@@ -3,19 +3,28 @@
 	import { ProgressRadial, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import RunConfigButtons from '../RunConfigButtons.svelte';
 	import { miroSession } from '$lib/store';
+	import Icon from '@iconify/svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	let prompts: Prompt[] = [];
 	let searchValue = '';
 
-	const modalStore = getModalStore();
+	export let options: {
+		showRunConfigButtons?: boolean;
+		showAddPromptButton?: boolean;
+	} = {};
 
+	const dispatch = createEventDispatcher();
+	const promptSelected = (prompt: Prompt) => {
+		dispatch('promptSelected', { prompt });
+	};
+
+	const modalStore = getModalStore();
 	const triggerModal = (prompt: Prompt) => {
 		const modal: ModalSettings = {
-			type: 'alert',
-			// Data
-			title: prompt.name,
-			body: `<p class="italic pb-4">${prompt.description}</p><hr/><p class="pt-4">${prompt.signifier}</p>`,
-			buttonTextCancel: 'Done'
+			type: 'component',
+			component: 'promptModal',
+			meta: { prompt }
 		};
 		modalStore.trigger(modal);
 	};
@@ -59,9 +68,14 @@
 			prompts = [];
 		}
 	}
+
+	const buttonClasses =
+		options.showAddPromptButton || options.showRunConfigButtons
+			? 'grid grid-cols-[minmax(0px,_1fr)_48px]'
+			: '';
 </script>
 
-<div class="card p-4">
+<div class="card-soft p-4">
 	<input
 		class="input mb-4"
 		type="search"
@@ -72,20 +86,27 @@
 	{#if prompts.length > 0}
 		<div class="flex flex-col gap-y-4">
 			{#each prompts as prompt (prompt.promptId)}
-				<div
-					class="grid grid-cols-[minmax(0px,_1fr)_48px] gap-4 input-group input-group-divider rounded-container-token hover:cursor-pointer"
-				>
+				<div class="{buttonClasses} card gap-x-4 rounded-container-token hover:cursor-pointer">
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div class="!block p-2" on:click={() => triggerModal(prompt)}>
-						<h5 class="h5 whitespace-nowrap overflow-hidden text-ellipsis w-[210px]">
+					<div class="p-2 overflow-hidden" on:click={() => triggerModal(prompt)}>
+						<h5 class="h5 whitespace-nowrap overflow-hidden text-ellipsis">
 							{prompt.name}
 						</h5>
-						<p class="italic whitespace-nowrap overflow-hidden text-ellipsis w-[210px]">
+						<p class="italic whitespace-nowrap overflow-hidden text-ellipsis">
 							{prompt.signifier}
 						</p>
 					</div>
-					<RunConfigButtons {prompt} />
+					{#if options.showRunConfigButtons}
+						<RunConfigButtons {prompt} />
+					{:else if options.showAddPromptButton}
+						<button
+							type="button"
+							class="variant-filled-primary flex justify-center items-center rounded-r-lg text-white"
+							title="Configure prompt"
+							on:click={() => promptSelected(prompt)}><Icon icon="ion:plus" /></button
+						>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -94,6 +115,8 @@
 			<ProgressRadial width={'w-10'} stroke={100} />
 		</div>
 	{:else}
-		<p class="text-gray-500">No prompts found<br />Type at least 3 characters to find prompts...</p>
+		<p class="text-gray-600">
+			No prompts found!<br />Type a word (e.g. "brainstorm") to find related prompts...
+		</p>
 	{/if}
 </div>

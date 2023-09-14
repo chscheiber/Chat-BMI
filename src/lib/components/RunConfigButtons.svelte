@@ -30,12 +30,14 @@
 	};
 </script>
 
-<div class="flex flex-col !p-0 items-center">
-	<button class="variant-filled-secondary grow-[3]" title="Configure prompt" on:click={configPrompt}
-		><Icon icon="grommet-icons:configure" /></button
+<div class="flex flex-col !p-0">
+	<button
+		class="flex items-center justify-center variant-filled-secondary grow-[3] rounded-tr-lg"
+		title="Configure prompt"
+		on:click={configPrompt}><Icon icon="grommet-icons:configure" /></button
 	>
 	<button
-		class="{selectedClass} text-white grow-[4]"
+		class="{selectedClass} flex items-center justify-center text-white grow-[4] rounded-br-lg"
 		title="Run prompt"
 		on:click={runPrompt}
 		disabled={!prompt && signifier === ''}><Icon icon="ion:play" /></button

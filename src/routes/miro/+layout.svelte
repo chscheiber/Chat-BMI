@@ -8,16 +8,18 @@
 		getDrawerStore,
 		initializeStores,
 		type DrawerSettings,
-		ProgressRadial
+		ProgressRadial,
+		type ModalComponent
 	} from '@skeletonlabs/skeleton';
 
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { openAISettings } from '$lib/store';
+	import { loading, openAISettings } from '$lib/store';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { navigating } from '$app/stores';
+	import PromptModal from '$lib/components/StartingPage/PromptModal.svelte';
 
 	export let data: LayoutData;
 
@@ -52,12 +54,24 @@
 	export const links = [
 		// { icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
 		{ icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
-		{ icon: 'bi:collection', text: 'All Conversations', href: '/miro/conversations' },
-		{ icon: 'ion:library-outline', text: 'Prompt Types', href: '/miro/prompts' }
-		// { icon: 'bi:collection', text: 'Collections', href: '/miro/collections' },
+		{ icon: 'ci:chat-conversation', text: 'All Conversations', href: '/miro/conversations' },
+		{ icon: 'ion:library-outline', text: 'Prompt Types', href: '/miro/prompts' },
+		{ icon: 'bi:collection', text: 'Collections', href: '/miro/collections' }
 		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
 		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
 	] as const;
+
+	const modalComponentRegistry: Record<string, ModalComponent> = {
+		// Custom Modal 1
+		promptModal: {
+			// Pass a reference to your custom component
+			ref: PromptModal
+			// Add the component properties as key/value pairs
+			// props: { background: 'bg-red-500' },
+			// Provide a template literal for the default component slot
+			// slot: '<p>Skeleton</p>'
+		}
+	};
 </script>
 
 <Drawer>
@@ -95,7 +109,7 @@
 	{/each}
 </Drawer>
 <Toast />
-<Modal />
+<Modal components={modalComponentRegistry} />
 <AppShell>
 	<svelte:fragment slot="header"
 		><AppBar background="bg-surface-100">
@@ -119,7 +133,7 @@
 
 	<!-- Router Slot -->
 	<div class="app-body p-6 h-[90vh] overflow-y-auto flex flex-col">
-		{#if $navigating}
+		{#if $navigating || $loading}
 			<div class=" h-[100%] grid place-items-center">
 				<ProgressRadial width={'w-20'} stroke={100} class="p-2" />
 			</div>

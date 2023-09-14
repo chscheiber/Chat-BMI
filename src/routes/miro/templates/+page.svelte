@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CanvasTemplate } from '$lib/models/canvas-template.model';
+	import type { CanvasTemplate } from '$lib/models';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -50,7 +50,7 @@
 {#if data.templates && data.templates.length > 0}
 	<div class="flex flex-col overflow-y-auto">
 		{#each data.templates as template}
-			<div class="card">
+			<div class="card-soft">
 				<div class="card-header">
 					<img src={template.imageUrl} alt={template.title + ' image preview'} />
 				</div>

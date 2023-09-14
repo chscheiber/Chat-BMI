@@ -9,6 +9,36 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      collections: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          team_id: string
+          title: string
+          user_id: string
+          visibility: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          team_id: string
+          title: string
+          user_id: string
+          visibility: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          team_id?: string
+          title?: string
+          user_id?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -77,6 +107,34 @@ export interface Database {
           value?: string
         }
         Relationships: []
+      }
+      prompt_collection_mapping: {
+        Row: {
+          collection: number
+          prompt: number
+        }
+        Insert: {
+          collection: number
+          prompt: number
+        }
+        Update: {
+          collection?: number
+          prompt?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_collection_mapping_collection_fkey"
+            columns: ["collection"]
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_collection_mapping_prompt_fkey"
+            columns: ["prompt"]
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       prompt_types: {
         Row: {

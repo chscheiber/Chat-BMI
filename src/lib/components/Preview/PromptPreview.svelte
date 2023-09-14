@@ -11,8 +11,8 @@
 	const savePrompt = async () => {
 		try {
 			if ($miroSession) {
-				prompt.userId = Number($miroSession.user);
-				prompt.teamId = Number($miroSession.team);
+				prompt.userId = $miroSession.user;
+				prompt.teamId = $miroSession.team;
 			}
 			const res = await fetch('/api/prompts', {
 				method: 'POST',

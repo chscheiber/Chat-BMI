@@ -22,7 +22,7 @@
 <div class="flex flex-col flex-1 justify-end gap-y-4 h-[100%]">
 	<div class="flex flex-col gap-y-4 overflow-y-auto">
 		<ConversationHistory {conversations} />
-		<PromptFinder />
+		<PromptFinder options={{ showRunConfigButtons: true }} />
 	</div>
 	<div class="mt-auto">
 		<RunPrompt />

@@ -1,5 +1,4 @@
 import type { Database } from '$lib/database';
-import type { StickyNoteProps } from '@mirohq/websdk-types';
 import type { MiroBoardItem } from './context/context.types';
 
 export class CanvasTemplate {
