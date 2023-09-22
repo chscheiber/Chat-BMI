@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { ROUTES } from '$lib';
 	import BackNav from '$lib/components/BackNav.svelte';
+	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
 	import { PromptFactory, type Prompt, type PromptTypeKey } from '$lib/models/prompts';
-	import { Step, Stepper } from '@skeletonlabs/skeleton';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
+	import { loading, newConversation, newPrompt } from '$lib/store';
+	import { Step, Stepper, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import Context from './Context.svelte';
-	import PromptPreview from '$lib/components/Preview/PromptPreview.svelte';
-	import { currentPrompts, newConversation, newPrompt } from '$lib/store';
-	import { ROUTES } from '$lib';
-	import { Conversation } from '$lib/models/prompts/conversation.model';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
+	export let form;
+
+	const toast = getToastStore();
 	let prompt: Prompt;
 
 	if ($newPrompt) {
@@ -21,6 +25,8 @@
 			? data.prompt
 			: PromptFactory.createPrompt(data.params.prompt_type as PromptTypeKey);
 	}
+
+	$: if (form?.error) toast.trigger({ message: form.error, background: 'variant-filled-error' });
 </script>
 
 <BackNav heading={prompt.name ?? 'New Prompt'} />
@@ -38,10 +44,22 @@
 		goto(ROUTES.NEW_CONVERSATION);
 	}}
 >
-	<Step>
-		<svelte:fragment slot="header">{prompt.type.name}</svelte:fragment>
-		<PromptPreview bind:prompt />
-	</Step>
+	<form
+		method="post"
+		use:enhance={() => {
+			loading.set(true);
+
+			return async ({ update }) => {
+				await update();
+				loading.set(false);
+			};
+		}}
+	>
+		<Step>
+			<svelte:fragment slot="header">{prompt.type.name}</svelte:fragment>
+			<PromptPreview bind:prompt />
+		</Step>
+	</form>
 	{#if prompt.type.dbQueriesSelectable && false}
 		<Step>
 			<svelte:fragment slot="header">DB Queries</svelte:fragment>

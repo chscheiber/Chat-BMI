@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { ROUTES } from '$lib';
-	import type { Conversation } from '$lib/models/prompts/conversation.model';
+	import ConversationComponent from '$lib/components/ConversationComponent.svelte';
+	import type { Conversation } from '$lib/models/prompts/conversation.model.js';
 	import { currentContext, miroSession, newConversation } from '$lib/store';
 	import { supabase } from '$lib/supabase.js';
 
@@ -9,10 +10,13 @@
 	let conversation = $newConversation;
 
 	if (!conversation) {
-		goto('/miro');
+		goto(ROUTES.HOME);
 	}
+
 	conversation = conversation as Conversation;
+
 	const prompt = conversation.prompt ?? conversation.collection?.prompts[0];
+	console.log('prompt', prompt);
 	if (prompt) {
 		prompt.context = $currentContext;
 		conversation.addMessage({
@@ -20,29 +24,24 @@
 			role: 'human',
 			promptType: prompt.type.key
 		});
-	} else goto('/miro');
+	} else {
+		goto(ROUTES.HOME);
+	}
 
 	const teamId = $miroSession?.team ?? '';
 	const userId = $miroSession?.user ?? '';
-
-	if (!userId || !teamId) {
-		goto('/miro');
-	}
-
-	supabase
-		.from('conversations')
-		.insert({
-			team_id: teamId,
-			user_id: userId,
-			title: conversation.title,
-			collection: conversation.collection?.id,
-			messages: conversation.messages
-		})
-		.select('id')
-		.single()
-		.then((res) => {
-			console.log(res.data);
-			if (res.data?.id) goto(`${ROUTES.CONVERSATION}/${res.data.id}`);
-			else goto('/miro');
-		});
+	console.log('conversation', conversation);
+	supabase.from('conversations').insert({
+		team_id: teamId,
+		user_id: userId,
+		title: conversation.title,
+		collection: conversation.collection?.id,
+		messages: conversation.messages
+	});
 </script>
+
+{#if conversation}
+	<ConversationComponent {conversation} />
+{:else}
+	<p>Conversation not found.</p>
+{/if}

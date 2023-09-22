@@ -32,14 +32,13 @@
 			teamId: prompt.teamId
 		});
 		newConversation.set(conversation);
-		// currentPrompts.set(prompt);
 		goto(ROUTES.NEW_CONVERSATION);
 	};
 </script>
 
 <div class="flex flex-col !p-0">
 	<button
-		class="flex items-center justify-center variant-filled-secondary grow-[3] rounded-tr-lg"
+		class="flex items-center justify-center variant-filled-secondary grow-[3]"
 		title="Configure prompt"
 		on:click={configPrompt}><Icon icon="grommet-icons:configure" /></button
 	>

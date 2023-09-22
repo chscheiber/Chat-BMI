@@ -1,25 +1,42 @@
 <script lang="ts">
 	import type { Prompt, FreeFormPrompt } from '$lib/models/prompts';
-	import BooleanInput from './BooleanInput.svelte';
-	import TextArea from './TextArea.svelte';
+	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { PERSONA_PREVIEW, SCENARIO_PREVIEW } from './preview.helper';
 
 	export let prompt: Prompt;
 	const freeFormPrompt = prompt as FreeFormPrompt;
 </script>
 
-<TextArea
-	label={PERSONA_PREVIEW.label}
-	placeholder={PERSONA_PREVIEW.placeholder}
-	bind:value={freeFormPrompt.persona}
-/>
-<TextArea
-	label={SCENARIO_PREVIEW.label}
-	placeholder={SCENARIO_PREVIEW.placeholder}
-	bind:value={freeFormPrompt.scenario}
-/>
+<label class="label">
+	<span>{PERSONA_PREVIEW.label}</span>
+	<textarea
+		class="textarea"
+		placeholder={PERSONA_PREVIEW.placeholder}
+		name="persona"
+		rows="4"
+		bind:value={freeFormPrompt.persona}
+	/>
+</label>
+<label class="label">
+	<span>{SCENARIO_PREVIEW.label}</span>
+	<textarea
+		class="textarea"
+		placeholder={SCENARIO_PREVIEW.placeholder}
+		name="scenario"
+		rows="4"
+		bind:value={freeFormPrompt.scenario}
+	/>
+</label>
 
 <div class="flex flex-col gap-y-4">
-	<BooleanInput bind:checked={freeFormPrompt.referencing} label="Include references" />
-	<BooleanInput bind:checked={freeFormPrompt.reasoning} label="Let the model add reasoning" />
+	<div class="flex">
+		<SlideToggle name="referencing" bind:checked={freeFormPrompt.referencing}
+			>Include references</SlideToggle
+		>
+	</div>
+	<div class="flex">
+		<SlideToggle name="reasoning" bind:checked={freeFormPrompt.reasoning}
+			>Let the model add reasoning</SlideToggle
+		>
+	</div>
 </div>

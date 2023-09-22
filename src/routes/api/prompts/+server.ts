@@ -1,7 +1,7 @@
 import { restrictQuery, type AdditionalPromptElements } from '$lib';
 import type { ApiPrompt } from '$lib/models/prompts/api-prompt.model';
 import { supabase } from '$lib/supabase';
-import { error } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -16,16 +16,23 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (!searchValue) throw error(400, 'No search value provided');
 
 	if (!userId || !teamId) throw error(400, 'No user or team id provided');
-	let query = supabase.from('prompts').select().textSearch('fts', searchValue).limit(limit);
+	let query = supabase
+		.from('prompts')
+		.select()
+		.or(
+			`name.ilike.%${searchValue}%,description.ilike.%${searchValue}%,signifier.ilike.%${searchValue}%`
+		)
+		// .textSearch('fts', searchValue)
+		.limit(limit);
 	query = restrictQuery(query, userId, teamId);
 	const { data, error: e } = await query;
 
-	return new Response(JSON.stringify(data), { status: 200 });
+	return json(data);
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-	const json = await request.json();
-	const prompt: ApiPrompt = json.prompt;
+	const body = await request.json();
+	const prompt: ApiPrompt = body.prompt;
 
 	const tempValues: { scenarioId?: number; personaId?: number } = {};
 
@@ -72,6 +79,5 @@ export const POST: RequestHandler = async ({ request }) => {
 		})
 		.select()
 		.single();
-	console.log(data, error);
-	return new Response(JSON.stringify(data), { status: 200 });
+	return body(data);
 };
