@@ -37,6 +37,11 @@
 			</div>
 		{/each}
 	{:else}
-		<p>No collections found.</p>
+		<div class="alert variant-filled-error">
+			<div class="flex items-center">
+				<Icon icon="octicon:alert-16" class="text-lg me-3" />
+				<p class="alert-message">No Collection found.</p>
+			</div>
+		</div>
 	{/if}
 </div>

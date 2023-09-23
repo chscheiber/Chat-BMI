@@ -12,7 +12,6 @@ export const load = (async ({ parent }) => {
 		.select('*, prompts(*, position:prompt_collection_mapping(position))');
 	const { data, error: err } = await restrictQuery(query, userId, teamId);
 	if (!data || err) throw error(500, 'Could not retrieve collections');
-	if (data.length === 0) throw error(404, 'No collections found');
 	const collections = data.map((collection) => new Collection(collection));
 	return { collections };
 }) satisfies PageLoad;

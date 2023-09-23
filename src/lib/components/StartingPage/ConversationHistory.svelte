@@ -35,6 +35,8 @@
 			{/each}
 		</div>
 	{:else}
-		<p class="text-sm text-center">No conversations yet...</p>
+		<div class="card-soft p-2">
+			<p class="text-sm text-center">No conversations yet...</p>
+		</div>
 	{/if}
 </div>

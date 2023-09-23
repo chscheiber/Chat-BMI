@@ -248,6 +248,12 @@
 		on:click={onImportContext}>+</button
 	>
 	<textarea
+		on:keydown={($event) => {
+			if ($event.key === 'Enter' && !$event.shiftKey) {
+				$event.preventDefault();
+				runPrompt();
+			}
+		}}
 		bind:value={newMessage}
 		disabled={$response.loading}
 		class="bg-transparent border-0 ring-0"

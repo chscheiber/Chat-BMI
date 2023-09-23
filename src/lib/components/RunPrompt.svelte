@@ -3,6 +3,17 @@
 	import RunConfigButtons from './RunConfigButtons.svelte';
 	let signifier = '';
 	let promptType: PromptTypeKey = 'freeForm';
+
+	let runPrompt: () => void;
+	let configPrompt: () => void;
+
+	const onSpecialKeyPress = ($event: KeyboardEvent) => {
+		if ($event.key === 'Enter' && $event.ctrlKey) {
+			configPrompt();
+		} else if ($event.key === 'Enter' && !$event.shiftKey) {
+			runPrompt();
+		}
+	};
 </script>
 
 <div class="flex flex-col input-group rounded-container-token">
@@ -15,13 +26,14 @@
 		<textarea
 			class="bg-transparent border-0 flex-1 resize-none"
 			bind:value={signifier}
+			on:keydown={onSpecialKeyPress}
 			name="prompt"
 			id="prompt"
 			placeholder="Write your prompt here...
 Hint: Select items from the miro board to provide context"
 			rows="3"
 		/>
-		<RunConfigButtons {signifier} {promptType} />
+		<RunConfigButtons bind:runPrompt bind:configPrompt {signifier} {promptType} />
 	</div>
 </div>
 
