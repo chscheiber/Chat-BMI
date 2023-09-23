@@ -1,6 +1,6 @@
-import type { AdditionalPromptElements } from '$lib';
+import { ROUTES, type AdditionalPromptElements } from '$lib';
 import { supabase } from '$lib/supabase';
-import { fail, json, text } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {
 	default: async ({ request }) => {
@@ -90,11 +90,11 @@ export const actions = {
 				team_id: values.teamId.toString(),
 				visibility: values.visibility.toString()
 			})
-			.select()
+			.select('id, type')
 			.single();
 
 		if (error) return fail(422, { error: error.message });
-		return data;
+		throw redirect(303, `${ROUTES.PROMPTS}/${data.type}/${data.id}`);
 	}
 };
 

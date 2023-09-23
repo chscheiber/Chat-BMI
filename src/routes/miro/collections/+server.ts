@@ -1,7 +1,7 @@
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import type { Visibility } from '$lib/types';
 import { supabase } from '$lib/supabase';
+import type { Visibility } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 export type NewCollectionBody = {
 	title: string;
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const { data: mappingData, error: mappingErr } = await supabase
 		.from('prompt_collection_mapping')
-		.insert(body.promptIds.map((id) => ({ prompt: id, collection: data.id })));
+		.insert(body.promptIds.map((id, i) => ({ prompt: id, collection: data.id, position: i })));
 
 	if (mappingErr) return json({ message: mappingErr }, { status: 500 });
 

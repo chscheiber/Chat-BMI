@@ -13,11 +13,11 @@
 	export let prompt: Prompt | null = null;
 	const configPrompt = () => {
 		if (prompt) {
-			goto(`/miro/prompts/${prompt.type.key}/${prompt.promptId}/preview`);
+			goto(`${ROUTES.PROMPTS}/${prompt.type.key}/${prompt.promptId}`);
 		} else {
 			const initializedPrompt = PromptFactory.emptyPrompt(promptType, { signifier });
 			newPrompt.set(initializedPrompt);
-			goto(`/miro/prompts/${promptType}/new/preview`);
+			goto(`${ROUTES.PROMPTS}/${promptType}/new`);
 		}
 	};
 
@@ -43,7 +43,7 @@
 		on:click={configPrompt}><Icon icon="grommet-icons:configure" /></button
 	>
 	<button
-		class="{selectedClass} flex items-center justify-center text-white grow-[4] rounded-br-lg"
+		class="{selectedClass} flex items-center justify-center text-white grow-[4] rounded-br-sm"
 		title="Run prompt"
 		on:click={runPrompt}
 		disabled={!prompt && signifier === ''}><Icon icon="ion:play" /></button

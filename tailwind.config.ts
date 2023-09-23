@@ -3,6 +3,7 @@ import type { Config } from 'tailwindcss';
 
 // 1. Import the Skeleton plugin
 import { skeleton } from '@skeletonlabs/tw-plugin';
+import { myCustomTheme } from './custom.theme';
 const config = {
 	// 2. Opt for dark mode to be handled via the class method
 	darkMode: 'class',
@@ -20,10 +21,10 @@ const config = {
 		skeleton({
 			themes: {
 				// Register each theme within this array:
-				preset: [
-					// Enable 'enhancements' per each registered theme:
-					{ name: 'skeleton', enhancements: true }
-				]
+				// preset: [
+				// 	{ name: 'skeleton', enhancements: true }
+				// ],
+				custom: [myCustomTheme]
 			}
 		})
 	]

@@ -10,6 +10,20 @@ hr {
 
 .card-soft {
 	@apply card;
-	@apply variant-soft;
+	@apply variant-soft-secondary;
 	@apply text-black;
+}
+
+hr {
+	@apply !border-secondary-500;
+}
+
+textarea,
+input,
+select {
+	@apply !bg-surface-200;
+}
+html,
+body {
+	@apply h-full overflow-hidden bg-white;
 }

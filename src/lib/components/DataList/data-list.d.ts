@@ -1,6 +1,6 @@
 export type DataListItem = {
 	title: string;
-	subtitle?: string;
+	subtitle: string;
 	href?: string;
 	image?: string;
 };

@@ -4,23 +4,21 @@
 	import Icon from '@iconify/svelte';
 </script>
 
-<div class="flex flex-col">
-	{#each PROMPT_TYPES as promptType, i}
-		<div class="my-3">
+<div class="flex flex-col gap-y-2">
+	{#each PROMPT_TYPES as promptType}
+		<div class="card-soft p-4">
 			<div class="flex justify-between mb-2">
 				<h2 class="h2">{promptType.name}s</h2>
 				<button
 					type="button"
-					class="btn-icon btn-icon-sm variant-filled ms-auto"
+					class="btn-icon btn-icon-sm variant-filled-primary ms-auto"
 					on:click={() => {
 						goto(`prompts/${promptType.key}`);
-					}}><Icon icon="ion:arrow-back" rotate={2} /></button
+					}}><Icon icon="ion:arrow-forward" /></button
 				>
 			</div>
-			<p class="italic text-sm">{promptType.description}</p>
-		</div>
-		{#if i < PROMPT_TYPES.length - 1}
 			<hr />
-		{/if}
+			<p class="italic text-sm mt-2">{promptType.description}</p>
+		</div>
 	{/each}
 </div>

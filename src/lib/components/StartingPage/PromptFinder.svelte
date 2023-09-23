@@ -90,10 +90,10 @@
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div class="p-2 overflow-hidden" on:click={() => triggerModal(prompt)}>
-						<h5 class="h5 whitespace-nowrap overflow-hidden text-ellipsis">
+						<h5 class="h5 whitespace-nowrap overflow-hidden text-ellipsis font-bold">
 							{prompt.name}
 						</h5>
-						<p class="italic whitespace-nowrap overflow-hidden text-ellipsis">
+						<p class=" whitespace-nowrap overflow-hidden text-ellipsis">
 							{prompt.signifier}
 						</p>
 					</div>
@@ -102,7 +102,7 @@
 					{:else if options.showAddPromptButton}
 						<button
 							type="button"
-							class="variant-filled-primary flex justify-center items-center rounded-r-lg text-white"
+							class="variant-filled-primary flex justify-center items-center rounded-r-md text-white"
 							title="Configure prompt"
 							on:click={() => promptSelected(prompt)}><Icon icon="ion:plus" /></button
 						>

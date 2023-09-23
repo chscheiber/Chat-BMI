@@ -14,7 +14,7 @@ export class Collection {
 	constructor(
 		data: Partial<
 			CollectionData & {
-				prompts: PromptData[];
+				prompts: (PromptData & { position: any })[];
 			}
 		>
 	) {
@@ -25,10 +25,11 @@ export class Collection {
 		this.userId = data.user_id ?? '';
 		this.teamId = data.team_id ?? '';
 		this.visibility = (data.visibility as 'public' | 'team' | 'private') ?? 'private';
+		console.log(data);
 		this.prompts =
-			data.prompts?.map((prompt) =>
-				PromptFactory.createPrompt(prompt.type as PromptTypeKey, prompt)
-			) ?? [];
+			data.prompts
+				?.sort((a, b) => a.position[0].position - b.position[0].position)
+				.map((prompt) => PromptFactory.createPrompt(prompt.type as PromptTypeKey, prompt)) ?? [];
 	}
 }
 

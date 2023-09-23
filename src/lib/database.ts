@@ -121,14 +121,17 @@ export interface Database {
       prompt_collection_mapping: {
         Row: {
           collection: number
+          position: number
           prompt: number
         }
         Insert: {
           collection: number
+          position?: number
           prompt: number
         }
         Update: {
           collection?: number
+          position?: number
           prompt?: number
         }
         Relationships: [

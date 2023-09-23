@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { loading, openAISettings } from '$lib/store';
-	import type { PageData } from './$types';
+	import type { PageData } from '../profile/$types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();

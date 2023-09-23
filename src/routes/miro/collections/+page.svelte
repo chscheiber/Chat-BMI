@@ -10,7 +10,7 @@
 <div class="flex gap-x-4 p-4 mb-4 items-center card-soft">
 	<button
 		type="button"
-		class="btn-icon btn-icon-sm variant-filled"
+		class="btn-icon btn-icon-sm variant-filled-primary"
 		on:click={() => {
 			goto(ROUTES.NEW_COLLECTION);
 		}}><Icon icon="ion:plus" /></button
@@ -26,7 +26,7 @@
 				</h3>
 				<p class="mb-2">{collection.description}</p>
 				<div class="flex justify-between">
-					<div class="card variant-ghost py-2 px-4">
+					<div class="card variant-ghost-secondary py-2 px-4">
 						{collection.prompts.length} Prompts
 					</div>
 					<button

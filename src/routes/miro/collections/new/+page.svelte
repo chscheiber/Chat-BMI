@@ -102,9 +102,13 @@
 	};
 </script>
 
-<BackNav heading="Collections" />
+<!-- <BackNav heading="Collections" /> -->
 <form on:submit|preventDefault={onSubmit}>
-	<Stepper buttonCompleteLabel="Save Collection" buttonCompleteType="submit">
+	<Stepper
+		buttonCompleteLabel="Save Collection"
+		buttonNext="variant-filled-primary"
+		buttonCompleteType="submit"
+	>
 		<Step>
 			<svelte:fragment slot="header">Collection Data</svelte:fragment>
 			<label class="label">
@@ -144,21 +148,23 @@
 						<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<li
-							class="card-soft !rounded-lg p-3 hover:cursor-pointer"
+							class="card-soft !rounded-lg p-3 hover:cursor-pointer grid-cols-[auto_1fr_auto]"
 							on:click={() => openModal(prompt)}
 						>
-							<span class="badge !rounded-lg bg-primary-500">{i + 1}.</span>
-							<div class="flex flex-col overflow-hidden">
-								<span class="whitespace-nowrap text-ellipsis overflow-hidden">
-									{prompt.signifier}
-								</span>
-								<span class="text-sm italic !text-gray-700">{prompt.type.name}</span>
+							<span class="badge !rounded-lg bg-primary-500 text-white">{i + 1}.</span>
+							<div class="flex justify-between flex-1 overflow-hidden">
+								<div class="flex flex-col overflow-hidden">
+									<span class="whitespace-nowrap text-ellipsis overflow-hidden">
+										{prompt.name}
+									</span>
+									<span class="text-sm italic !text-gray-700">{prompt.type.name}</span>
+								</div>
+								<button
+									type="button"
+									class="btn btn-icon variant-filled-tertiary flex-shrink-0"
+									on:click|stopPropagation={() => removePrompt(i)}><Icon icon="ion:close" /></button
+								>
 							</div>
-							<button
-								type="button"
-								class="btn btn-icon variant-filled self-start"
-								on:click|stopPropagation={() => removePrompt(i)}><Icon icon="ion:close" /></button
-							>
 						</li>
 					{/each}
 				</ol>

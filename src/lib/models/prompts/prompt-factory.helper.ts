@@ -22,7 +22,7 @@ export const PROMPT_TYPES: PromptType[] = [
 export class PromptFactory {
 	static emptyPrompt(type: PromptTypeKey, data?: Partial<PromptData>): Prompt {
 		data = {
-			id: -1,
+			id: 0,
 			description: null,
 			created_at: null,
 			name: 'New Prompt',
@@ -48,7 +48,7 @@ export class PromptFactory {
 
 		if (!data) {
 			data = {
-				id: -1,
+				id: 0,
 				description: null,
 				created_at: null,
 				name: 'New Prompt',
@@ -62,7 +62,7 @@ export class PromptFactory {
 				private: false,
 				user_id: null,
 				fts: null,
-				team_id: -1,
+				team_id: '',
 				visibility: 'private'
 			};
 		}

@@ -9,11 +9,12 @@
 	export let prompt: Prompt;
 </script>
 
-{#if prompt.promptId !== -1}
+{#if prompt.promptId}
 	{#if prompt.description}
-		<p>
-			{prompt.description}
-		</p>
+		<label class="label">
+			<span>Description</span>
+			<textarea disabled class="input" value={prompt.description} />
+		</label>
 	{/if}
 {:else}
 	<input type="hidden" name="type" value={prompt.type.key} />
@@ -63,12 +64,14 @@
 			class="input"
 			name="visibility"
 			bind:value={prompt.visibility}
-			disabled={prompt.promptId !== -1}
+			disabled={!!prompt.promptId}
 		>
 			<option value="private">Private</option>
 			<option value="team">Team</option>
 			<option value="public" disabled={$miroSession?.user !== PUBLIC_MIRO_ADMIN_ID}>Public</option>
 		</select>
 	</label>
-	<button type="submit" class="btn variant-filled-primary">Save Prompt</button>
+	{#if !prompt.promptId}
+		<button type="submit" class="btn variant-filled-secondary">Save Prompt</button>
+	{/if}
 </div>

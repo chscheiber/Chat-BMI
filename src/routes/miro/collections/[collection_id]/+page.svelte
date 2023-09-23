@@ -1,12 +1,11 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { ROUTES, type Prompt } from '$lib';
+	import { Conversation } from '$lib/models/prompts/conversation.model';
+	import { currentContext, loading, miroSession, newConversation } from '$lib/store';
 	import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
-	import { ROUTES, type Prompt, Collection } from '$lib';
-	import BackNav from '$lib/components/BackNav.svelte';
 	import type { DeleteCollectionBody } from './+server';
-	import { loading, miroSession, newConversation } from '$lib/store';
-	import { goto } from '$app/navigation';
-	import { Conversation } from '$lib/models/prompts/conversation.model';
 
 	export let data: PageData;
 
@@ -61,6 +60,11 @@
 	};
 
 	const runCollection = async () => {
+		if (
+			$currentContext === '' &&
+			!confirm('Are you sure you want to run this collection without context?')
+		)
+			return;
 		const conversation = new Conversation({
 			userId: $miroSession?.user ?? '',
 			teamId: $miroSession?.team ?? '',
@@ -70,9 +74,11 @@
 		newConversation.set(conversation);
 		goto(ROUTES.NEW_CONVERSATION);
 	};
+
+	$: selectedClass = $currentContext !== '' ? 'variant-filled-success ' : 'variant-filled-warning';
 </script>
 
-<BackNav heading="Collections" />
+<!-- <BackNav heading="Collections" /> -->
 <div class="card-soft p-4">
 	<h3 class="h3 mb-4">{data.collection.title}</h3>
 	<p>{data.collection.description}</p>
@@ -82,10 +88,10 @@
 			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<li class="card-soft !rounded-lg p-3 hover:cursor-pointer" on:click={() => openModal(prompt)}>
-				<span class="badge !rounded-lg bg-primary-500">{i + 1}.</span>
+				<span class="badge !rounded-lg bg-primary-500 text-white">{i + 1}.</span>
 				<div class="flex flex-col overflow-hidden">
 					<span class="whitespace-nowrap text-ellipsis overflow-hidden">
-						{prompt.signifier}
+						{prompt.name}
 					</span>
 					<span class="text-sm italic !text-gray-700">{prompt.type.name}</span>
 				</div>
@@ -93,7 +99,9 @@
 		{/each}
 	</ol>
 	<div class="flex justify-between mt-4">
-		<button class="btn variant-filled-error" on:click={deleteCollection}>Delete</button>
-		<button class="btn variant-filled-primary" on:click={runCollection}>Run</button>
+		{#if $miroSession?.user === data.collection.userId}
+			<button class="btn variant-filled-error" on:click={deleteCollection}>Delete</button>
+		{/if}
+		<button class="btn ms-auto {selectedClass}" on:click={runCollection}>Run</button>
 	</div>
 </div>

@@ -6,8 +6,6 @@ import { Conversation } from '$lib/models/prompts/conversation.model';
 export const load = (async ({ params }) => {
 	const conversationId = params.conversation_id;
 
-	// if (conversationId === 'new') return { conversation: null, params };
-
 	const { data, error: err } = await supabase
 		.from('conversations')
 		.select('*, collections(*, prompts(*))')

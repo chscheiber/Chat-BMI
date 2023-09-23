@@ -1,25 +1,25 @@
 <script lang="ts">
 	import {
-		AppBar,
 		AppShell,
 		Drawer,
 		Modal,
+		ProgressRadial,
 		Toast,
 		getDrawerStore,
 		initializeStores,
 		type DrawerSettings,
-		ProgressRadial,
 		type ModalComponent
 	} from '@skeletonlabs/skeleton';
 
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import { navigating, page } from '$app/stores';
+	import { ROUTES } from '$lib';
+	import PromptModal from '$lib/components/StartingPage/PromptModal.svelte';
 	import { loading, openAISettings } from '$lib/store';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
-	import { navigating } from '$app/stores';
-	import PromptModal from '$lib/components/StartingPage/PromptModal.svelte';
 
 	export let data: LayoutData;
 
@@ -37,12 +37,13 @@
 
 	function drawerOpen(): void {
 		const drawerSettings: DrawerSettings = {
-			id: 'example-3',
+			id: 'menu-drawer',
 			// Provide your property overrides:
-			bgDrawer: 'bg-surface-100',
-			bgBackdrop: 'bg-surface-100/30',
+			bgDrawer: 'bg-white',
+			bgBackdrop: 'bg-surface-800/50',
 			width: 'w-[280px] md:w-[480px]',
-			rounded: 'rounded-e-xl'
+			rounded: 'rounded-s-xl',
+			position: 'right'
 		};
 		drawerStore.open(drawerSettings);
 	}
@@ -53,10 +54,12 @@
 
 	export const links = [
 		// { icon: 'ion:star-outline', text: 'Favorites', href: '/miro/favorites' },
-		{ icon: 'ion:document-outline', text: 'Templates', href: '/miro/templates' },
-		{ icon: 'ci:chat-conversation', text: 'All Conversations', href: '/miro/conversations' },
-		{ icon: 'ion:library-outline', text: 'Prompt Types', href: '/miro/prompts' },
-		{ icon: 'bi:collection', text: 'Collections', href: '/miro/collections' }
+		{ icon: 'ion:home-outline', text: 'Home', href: ROUTES.HOME },
+		{ icon: 'ion:document-outline', text: 'Templates', href: ROUTES.TEMPLATES },
+		{ icon: 'ci:chat-conversation', text: 'All Conversations', href: ROUTES.CONVERSATIONS },
+		{ icon: 'ion:library-outline', text: 'Prompt Types', href: ROUTES.PROMPTS },
+		{ icon: 'bi:collection', text: 'Collections', href: ROUTES.COLLECTIONS },
+		{ icon: 'grommet-icons:configure', text: 'Settings', href: ROUTES.SETTINGS }
 		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
 		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
 	] as const;
@@ -66,76 +69,89 @@
 		promptModal: {
 			// Pass a reference to your custom component
 			ref: PromptModal
-			// Add the component properties as key/value pairs
-			// props: { background: 'bg-red-500' },
-			// Provide a template literal for the default component slot
-			// slot: '<p>Skeleton</p>'
 		}
+	};
+
+	const getRouteHeader = (route: string) => {
+		if (route.includes(ROUTES.TEMPLATES)) {
+			return 'Templates';
+		} else if (route.includes(ROUTES.NEW_COLLECTION)) {
+			return 'New  Collection';
+		} else if (route.includes(ROUTES.COLLECTIONS)) {
+			return 'Collections';
+		} else if (route.includes(ROUTES.NEW_CONVERSATION)) {
+			return 'New  Conversation';
+		} else if (route.includes(ROUTES.CONVERSATIONS)) {
+			return 'All Conversations';
+		} else if (route.includes(ROUTES.PROMPTS)) {
+			return 'Prompt Types';
+		} else if (route === '/miro') {
+			return 'Home';
+		}
+		return 'Generative BMI';
 	};
 </script>
 
 <Drawer>
-	<div class="flex justify-start items-center m-4">
-		<button class="btn-icon btn-icon-sm variant-filled" on:click={drawerClose}
+	<div class=" variant-filled-secondary p-4 flex items-center justify-between">
+		<div />
+		<h3 class="h3 uppercase">Overview</h3>
+		<button class="btn-icon btn-icon-sm variant-filled-tertiary" on:click={drawerClose}
 			><Icon icon="ion:close" /></button
 		>
-		<h3 class="h3 mx-4">Generative BMI</h3>
-		<button
-			class="ms-auto btn-icon btn-icon-sm variant-filled"
-			on:click={() => {
-				drawerClose();
-				goto('/miro');
-			}}><Icon icon="ion:home" /></button
-		>
 	</div>
-	<hr />
-	{#each links as link}
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div
-			class="my-4 ms-4 flex items-center justify-start gap-4 hover:cursor-pointer"
-			on:click={() => {
-				drawerClose();
-				goto(link.href);
-			}}
-			on:keypress={() => {
-				drawerClose();
-				goto(link.href);
-			}}
-		>
-			<Icon icon={link.icon} style="font-size: 22px;" />
-			<h4 class="h4">{link.text}</h4>
-		</div>
-		<hr class="mx-4" />
-	{/each}
+	<div class="flex flex-col gap-y-2 m-2">
+		{#each links as link}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div
+				class="card-soft p-4 flex items-center justify-start gap-4 hover:cursor-pointer"
+				on:click={() => {
+					drawerClose();
+					goto(link.href);
+				}}
+				on:keypress={() => {
+					drawerClose();
+					goto(link.href);
+				}}
+			>
+				<Icon icon={link.icon} class="text-secondary-500" style="font-size: 22px;" />
+				<h4 class="h4">{link.text}</h4>
+			</div>
+		{/each}
+	</div>
 </Drawer>
 <Toast />
 <Modal components={modalComponentRegistry} />
 <AppShell>
-	<svelte:fragment slot="header"
-		><AppBar background="bg-surface-100">
-			<svelte:fragment slot="lead">
-				<div />
-				<button class="btn-icon btn-icon-sm variant-filled" on:click={() => drawerOpen()}
+	<svelte:fragment slot="header">
+		{#if !$navigating}
+			<div class="flex gap-4 p-4 items-center justify-between bg-secondary-500 text-white">
+				{#if $page.url.pathname !== ROUTES.HOME}
+					<button
+						class="btn-icon btn-icon-sm variant-filled-tertiary"
+						on:click={() => history.back()}><Icon icon="ion:chevron-left" /></button
+					>
+				{:else}
+					<div />
+				{/if}
+				<h2 class="h2">{getRouteHeader($page.url.pathname)}</h2>
+				<button class="btn-icon btn-icon-sm variant-filled-tertiary" on:click={() => drawerOpen()}
 					><Icon icon="ion:menu" /></button
 				>
-			</svelte:fragment>
-			<h3 class="h3"><a href="/miro">Generative BMI</a></h3>
-			<svelte:fragment slot="trail"
-				><button class="btn-icon btn-icon-sm variant-filled" on:click={() => goto('/miro/profile')}>
-					<Icon icon="ion:settings-outline" />
-				</button></svelte:fragment
-			>
-		</AppBar></svelte:fragment
-	>
-	<!-- <svelte:fragment slot="sidebarLeft">Sidebar Left</svelte:fragment> -->
-	<!-- (sidebarRight) -->
-	<!-- (pageHeader) -->
+			</div>
+		{/if}
+	</svelte:fragment>
 
 	<!-- Router Slot -->
-	<div class="app-body p-6 h-[90vh] overflow-y-auto flex flex-col">
+	<div class="app-body p-4 h-[90vh] overflow-y-auto flex flex-col">
 		{#if $navigating || $loading}
 			<div class=" h-[100%] grid place-items-center">
-				<ProgressRadial width={'w-20'} stroke={100} class="p-2" />
+				<ProgressRadial
+					width={'w-20'}
+					stroke={100}
+					meter="stroke-primary-500"
+					track="stroke-primary-500/30"
+				/>
 			</div>
 		{:else}
 			<slot />

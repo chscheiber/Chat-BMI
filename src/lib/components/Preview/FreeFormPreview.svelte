@@ -30,12 +30,14 @@
 
 <div class="flex flex-col gap-y-4">
 	<div class="flex">
-		<SlideToggle name="referencing" bind:checked={freeFormPrompt.referencing}
-			>Include references</SlideToggle
+		<SlideToggle
+			name="referencing"
+			active="bg-primary-500"
+			bind:checked={freeFormPrompt.referencing}>Include references</SlideToggle
 		>
 	</div>
 	<div class="flex">
-		<SlideToggle name="reasoning" bind:checked={freeFormPrompt.reasoning}
+		<SlideToggle name="reasoning" active="bg-primary-500" bind:checked={freeFormPrompt.reasoning}
 			>Let the model add reasoning</SlideToggle
 		>
 	</div>

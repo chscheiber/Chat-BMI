@@ -3,7 +3,7 @@
 	import type { Prompt } from '$lib/models';
 	import { MiroBoard } from '$lib/models/miro-board.model';
 	import type { Conversation, Message } from '$lib/models/prompts/conversation.model';
-	import { miroSession, openAISettings } from '$lib/store';
+	import { currentContext, miroSession, openAISettings } from '$lib/store';
 	import { supabase } from '$lib/supabase';
 	import Icon from '@iconify/svelte';
 	import {
@@ -60,7 +60,7 @@
 		}
 
 		try {
-			let url = ROUTES.CONVERSATION + '?streaming=';
+			let url = ROUTES.CONVERSATIONS + '?streaming=';
 			url += $openAISettings.streaming === false ? 'false' : 'true';
 
 			const body: ConversationMessageBody = {
@@ -139,9 +139,16 @@
 	});
 
 	const maxMessageHeight = conversation.collection?.prompts ? 'max-h-[55vh]' : 'max-h-[70vh]';
+
+	const onImportContext = () => {
+		if (newMessage.length > 0) newMessage += '\n';
+		newMessage += `Context:\n"${$currentContext}"`;
+	};
+
+	$: importClass = $currentContext === '' ? 'variant-filled-surface' : 'variant-filled-success';
 </script>
 
-<div class="{maxMessageHeight} overflow-y-auto pr-4" bind:this={div}>
+<div class="{maxMessageHeight} overflow-y-auto" bind:this={div}>
 	{#each chatHistory as message}
 		<div class="card-soft p-4 space-y-2 mb-4">
 			{#if message.role === 'system'}
@@ -208,12 +215,13 @@
 {#if conversation.collection?.prompts}
 	<ol class="list max-h-[20vh] my-4 overflow-y-auto">
 		{#each conversation.collection.prompts as prompt, i}
-			<li class="card-soft !rounded-lg p-3">
-				<span class="badge bg-primary-500"
-					><button on:click={() => runPrompt(prompt)}>
-						<Icon icon="ion:play-outline" />
-					</button></span
+			<li class="card-soft p-2">
+				<button
+					class=" btn-icon variant-filled-success p-[6px] text-lg"
+					on:click={() => runPrompt(prompt)}
 				>
+					<Icon icon="ion:play" />
+				</button>
 				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -230,7 +238,15 @@
 		{/each}
 	</ol>
 {/if}
-<div class="input-group input-group-divider grid-cols-[1fr_auto] rounded-container-token mt-auto">
+<div
+	class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token mt-auto"
+>
+	<button
+		title="Import miro context"
+		disabled={$currentContext === ''}
+		class={importClass}
+		on:click={onImportContext}>+</button
+	>
 	<textarea
 		bind:value={newMessage}
 		disabled={$response.loading}
