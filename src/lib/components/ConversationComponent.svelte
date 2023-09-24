@@ -41,8 +41,11 @@
 					},
 					{ onConflict: 'id' }
 				)
-				.select()
-				.then(({ data: d, error: e }) => console.log(`Conversation ${conversation.id}`, d, e));
+				.select('id')
+				.single()
+				.then((res) => {
+					if (res.data?.id) conversation.setId(res.data.id);
+				});
 		} else {
 			initialRun = false;
 		}

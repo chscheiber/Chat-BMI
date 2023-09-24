@@ -29,6 +29,10 @@ export class Conversation {
 		if (data.title) this.title = data.title;
 	}
 
+	public setId(id: number): void {
+		this.id = id;
+	}
+
 	public static fromDb(data: Prompt | ConversationData): Conversation {
 		if (data instanceof Prompt) {
 			return new Conversation({

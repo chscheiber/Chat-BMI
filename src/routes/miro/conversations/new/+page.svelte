@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { ROUTES } from '$lib';
 	import ConversationComponent from '$lib/components/ConversationComponent.svelte';
@@ -9,14 +10,13 @@
 	export let data;
 	let conversation = $newConversation;
 
-	if (!conversation) {
+	if (browser && !conversation) {
 		goto(ROUTES.HOME);
 	}
 
 	conversation = conversation as Conversation;
 
 	const prompt = conversation.prompt ?? conversation.collection?.prompts[0];
-	console.log('prompt', prompt);
 	if (prompt) {
 		prompt.context = $currentContext;
 		conversation.addMessage({
@@ -25,19 +25,20 @@
 			promptType: prompt.type.key
 		});
 	} else {
-		goto(ROUTES.HOME);
+		if (browser) goto(ROUTES.HOME);
 	}
 
-	const teamId = $miroSession?.team ?? '';
-	const userId = $miroSession?.user ?? '';
-	console.log('conversation', conversation);
-	supabase.from('conversations').insert({
-		team_id: teamId,
-		user_id: userId,
-		title: conversation.title,
-		collection: conversation.collection?.id,
-		messages: conversation.messages
-	});
+	if (browser) {
+		const teamId = $miroSession?.team ?? '';
+		const userId = $miroSession?.user ?? '';
+		supabase.from('conversations').insert({
+			team_id: teamId,
+			user_id: userId,
+			title: conversation.title,
+			collection: conversation.collection?.id,
+			messages: conversation.messages
+		});
+	}
 </script>
 
 {#if conversation}
