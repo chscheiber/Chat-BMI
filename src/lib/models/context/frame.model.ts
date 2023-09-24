@@ -16,7 +16,7 @@ export class Frame {
 		const childItems = await this.data.getChildren();
 		const children: ContentItem[] = [];
 		childItems.forEach((item) => {
-			if (item.type === 'sticky_note' || item.type === 'text') {
+			if (item.type === 'sticky_note') {
 				children.push(new ContentItem(item));
 				this.children[item.id] = new ContentItem(item);
 			}
