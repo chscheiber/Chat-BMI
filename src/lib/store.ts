@@ -32,7 +32,7 @@ export const loading = writable<boolean>(false);
 
 export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSettings', {
 	key: '',
-	model: 'gpt-4',
+	model: 'gpt-3.5-turbo',
 	streaming: true
 });
 

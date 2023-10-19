@@ -56,10 +56,9 @@
 			chatHistory = [...chatHistory, { text: newMessage, role: 'human', promptType: 'freeForm' }];
 			newMessage = '';
 		} else if (prompt) {
-			chatHistory = [
-				...chatHistory,
-				{ text: prompt.toString(), role: 'human', promptType: prompt.type.key }
-			];
+			let text = prompt.toString();
+			if ($currentContext !== '') text += `\nContext:\n"${$currentContext}"`;
+			chatHistory = [...chatHistory, { text, role: 'human', promptType: prompt.type.key }];
 		}
 
 		try {

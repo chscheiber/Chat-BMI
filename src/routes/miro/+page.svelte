@@ -6,16 +6,11 @@
 	import { MiroBoard } from '$lib/models/miro-board.model';
 	import ConversationHistory from '$lib/components/StartingPage/ConversationHistory.svelte';
 	export let data;
-	// Prevent opening the panel if local storage is not accessible
-	try {
-		window.localStorage.setItem('miro', 'true');
-		if (browser) {
-			MiroBoard.registerApp();
-			const context = new MiroContext();
-			context.listenToUpdates();
-		}
-	} catch {
-		/* emtpy */
+
+	if (browser) {
+		MiroBoard.registerApp();
+		const context = new MiroContext();
+		context.listenToUpdates();
 	}
 
 	const conversations = data.conversations;

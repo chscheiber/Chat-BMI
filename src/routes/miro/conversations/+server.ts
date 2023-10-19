@@ -44,7 +44,7 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 			});
 			await callChain(body.messages, chat);
 			try {
-				controller.close();
+				setTimeout(() => controller.close(), 3000);
 			} catch {
 				/* empty */
 			}

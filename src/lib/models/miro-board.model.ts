@@ -16,7 +16,6 @@ export class MiroBoard {
 	}
 
 	public static async writeToBoard(text: string) {
-		const selection = await miro.board.getSelection();
 		await miro.board.deselect();
 		const stickyNotesContent: string[] = [];
 		const stickyNotes: StickyNote[] = [];
@@ -24,19 +23,21 @@ export class MiroBoard {
 
 		/* Split text into paragraphs */
 		const regex = /(^\d\. )(.*)/;
-		text.split('\n\n').forEach((line) => {
-			if (line.length === 0) return;
-			const match = regex.exec(line);
-			if (match && match.length === 3) line = match[2];
-			if (line.length < maxContentLength) {
-				stickyNotesContent.push(line);
-			} else {
-				for (let i = 0; i < Math.ceil(text.length / maxContentLength); i++) {
-					const content = text.substring(i * maxContentLength, (i + 1) * maxContentLength);
-					stickyNotesContent.push(content);
+		text
+			.split('\n')
+			.filter((line) => line.trim() !== '' && line.trim() !== '\n')
+			.forEach((line) => {
+				const match = regex.exec(line);
+				if (match && match.length === 3) line = match[2];
+				if (line.length < maxContentLength) {
+					stickyNotesContent.push(line);
+				} else {
+					for (let i = 0; i < Math.ceil(text.length / maxContentLength); i++) {
+						const content = text.substring(i * maxContentLength, (i + 1) * maxContentLength);
+						stickyNotesContent.push(content);
+					}
 				}
-			}
-		});
+			});
 
 		/* If a frame is selected, add all sticky notes to this frame */
 		// if (selection.length === 1 && selection[0].type === 'frame') {

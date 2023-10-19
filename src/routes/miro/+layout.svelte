@@ -16,9 +16,8 @@
 	import { navigating, page } from '$app/stores';
 	import { ROUTES } from '$lib';
 	import PromptModal from '$lib/components/StartingPage/PromptModal.svelte';
-	import { loading, openAISettings } from '$lib/store';
+	import { loading } from '$lib/store';
 	import Icon from '@iconify/svelte';
-	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
@@ -26,14 +25,14 @@
 	initializeStores();
 	const drawerStore = getDrawerStore();
 
-	onMount(() => {
-		if (!browser) return;
-		const storedKey = window.localStorage.getItem('llmSettings');
-		if (storedKey) {
-			const llmSettings = JSON.parse(storedKey);
-			openAISettings.set(llmSettings);
-		}
-	});
+	// onMount(() => {
+	// 	if (!browser) return;
+	// 	const storedKey = window.localStorage.getItem('llmSettings');
+	// 	if (storedKey) {
+	// 		const llmSettings = JSON.parse(storedKey);
+	// 		openAISettings.set(llmSettings);
+	// 	}
+	// });
 
 	function drawerOpen(): void {
 		const drawerSettings: DrawerSettings = {
@@ -58,8 +57,8 @@
 		{ icon: 'ion:document-outline', text: 'Templates', href: ROUTES.TEMPLATES },
 		{ icon: 'ci:chat-conversation', text: 'All Conversations', href: ROUTES.CONVERSATIONS },
 		{ icon: 'ion:library-outline', text: 'Prompt Types', href: ROUTES.PROMPTS },
-		{ icon: 'bi:collection', text: 'Collections', href: ROUTES.COLLECTIONS },
-		{ icon: 'grommet-icons:configure', text: 'Settings', href: ROUTES.SETTINGS }
+		{ icon: 'bi:collection', text: 'Collections', href: ROUTES.COLLECTIONS }
+		// { icon: 'grommet-icons:configure', text: 'Settings', href: ROUTES.SETTINGS }
 		// { icon: 'ion:people-outline', text: 'Personas', href: '/miro/personas' },
 		// { icon: 'material-symbols:scene-outline', text: 'Scenarios', href: '/miro/scenarios' }
 	] as const;

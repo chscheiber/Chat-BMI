@@ -36,10 +36,6 @@
 	buttonCompleteLabel="Run Prompt"
 	buttonNext="variant-filled-primary"
 	on:complete={() => {
-		if (!htmlForm?.checkValidity()) {
-			alert('Please fill out all required fields.');
-			return;
-		}
 		const conversation = new Conversation({
 			prompt: prompt,
 			title: prompt.signifier,
