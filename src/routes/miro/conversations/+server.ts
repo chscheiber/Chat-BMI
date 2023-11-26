@@ -39,15 +39,15 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 				modelName: body.modelName,
 				streaming: true,
 				callbackManager: CallbackManager.fromHandlers({
-					handleLLMNewToken: async (token: string) => controller.enqueue(token)
+					handleLLMNewToken: async (token: string) => {
+						controller.enqueue(token);
+					},
+					handleLLMEnd: async () => {
+						controller.close();
+					}
 				})
 			});
 			await callChain(body.messages, chat);
-			try {
-				setTimeout(() => controller.close(), 5000);
-			} catch {
-				/* empty */
-			}
 		}
 	});
 
