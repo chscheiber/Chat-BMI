@@ -25,9 +25,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		throw error(400, 'No OpenAI API key provided');
 	}
 
-	// if (streaming) {
-	// 	return streamResponse(body, key);
-	// }
+	if (streaming) {
+		return streamResponse(body, key);
+	}
 	return waitFullResponse(body, key);
 };
 
@@ -57,7 +57,7 @@ const callLLM = async (body: ConversationMessageBody, key: string, stream = true
 	);
 
 	messages.unshift({ role: 'system', content: data.system_prompt });
-
+	console.log(messages);
 	const result = openai.chat.completions.create({
 		model: body.modelName,
 		messages,
