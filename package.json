@@ -59,6 +59,7 @@
 		"@supabase/supabase-js": "^2.33.1",
 		"jwt-decode": "^3.1.2",
 		"langchain": "^0.0.114",
+		"openai": "^4.20.1",
 		"turndown": "^7.1.2"
 	}
 }
