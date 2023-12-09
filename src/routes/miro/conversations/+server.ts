@@ -25,9 +25,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		throw error(400, 'No OpenAI API key provided');
 	}
 
-	if (streaming) {
-		return streamResponse(body, key);
-	}
+	// if (streaming) {
+	// 	return streamResponse(body, key);
+	// }
 	return waitFullResponse(body, key);
 };
 
