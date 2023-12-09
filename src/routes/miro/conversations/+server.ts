@@ -44,7 +44,11 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 						controller.enqueue(token);
 					},
 					handleLLMEnd: async () => {
-						controller.close();
+						try {
+							controller.close();
+						} catch {
+							// ignore
+						}
 					}
 				})
 			});
