@@ -5,6 +5,7 @@ import { supabase } from '$lib/supabase';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { Stream } from 'openai/streaming';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 export type ConversationMessageBody = {
 	conversationId: number;
@@ -76,29 +77,14 @@ const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
 };
 
 const streamResponse = async (body: ConversationMessageBody, key: string) => {
-	const readableStream = new ReadableStream({
-		async start(controller) {
-			const stream = (await callLLM(
-				body,
-				key,
-				true
-			)) as Stream<OpenAI.Chat.Completions.ChatCompletionChunk>;
-
-			for await (const chunk of stream) {
-				controller.enqueue(chunk.choices[0]?.delta?.content || '');
-			}
-
-			try {
-				controller.close();
-			} catch {
-				// ignore
-			}
-		}
-	});
-
-	// Create and return a response of the readable stream
-	return new Response(readableStream, {
-		headers: { 'Content-Type': 'text/plain' }
+	const response = (await callLLM(
+		body,
+		key,
+		true
+	)) as Stream<OpenAI.Chat.Completions.ChatCompletionChunk>;
+	const stream = OpenAIStream(response);
+	return new StreamingTextResponse(stream, {
+		headers: { 'X-RATE-LIMIT': 'lol' }
 	});
 };
 

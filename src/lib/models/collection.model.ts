@@ -18,6 +18,7 @@ export class Collection {
 			}
 		>
 	) {
+		console.log(data);
 		this.id = data.id ?? 0;
 		this.title = data.title ?? '';
 		this.description = data.description ?? '';
@@ -28,7 +29,9 @@ export class Collection {
 		console.log(data);
 		this.prompts =
 			data.prompts
-				?.sort((a, b) => a.position[0].position - b.position[0].position)
+				?.sort((a, b) =>
+					a.position && b.position ? a.position[0].position - b.position[0].position : 0
+				)
 				.map((prompt) => PromptFactory.createPrompt(prompt.type as PromptTypeKey, prompt)) ?? [];
 	}
 }

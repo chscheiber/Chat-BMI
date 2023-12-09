@@ -37,6 +37,7 @@
 						user_id: userId,
 						team_id: teamId,
 						messages: chatHistory,
+						collection: conversation.collection?.id,
 						last_modified: new Date().toISOString()
 					},
 					{ onConflict: 'id' }
@@ -57,6 +58,11 @@
 			newMessage = '';
 		} else if (prompt) {
 			let text = prompt.toString();
+			if (
+				$currentContext !== '' &&
+				confirm('Do you want to include the selcted content from the Miro Board?')
+			)
+				text += `\nContext:\n"${$currentContext}"`;
 			chatHistory = [...chatHistory, { text, role: 'human', promptType: prompt.type.key }];
 		}
 
@@ -93,17 +99,6 @@
 		}
 	};
 
-	// const getModelName = (key: string) => {
-	// 	switch (key) {
-	// 		case 'gpt-3.5-turbo':
-	// 			return 'Chat-GPT';
-	// 		case 'gpt-4':
-	// 			return 'GPT-4';
-	// 		default:
-	// 			return 'Unknown';
-	// 	}
-	// };
-
 	let div: any;
 	let autoscroll = false;
 
@@ -135,8 +130,10 @@
 	};
 
 	onMount(() => {
-		console.log(conversation);
+		// Hack to scroll to bottom initially
+		setTimeout(() => div.scrollTo(0, div.scrollHeight), 0);
 		if (chatHistory[chatHistory.length - 1].role === 'human') runPrompt();
+		console.log(conversation);
 	});
 
 	const maxMessageHeight = conversation.collection?.prompts ? 'max-h-[55vh]' : 'max-h-[70vh]';
