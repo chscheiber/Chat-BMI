@@ -38,6 +38,7 @@ const streamResponse = async (body: ConversationMessageBody, key: string) => {
 				openAIApiKey: key,
 				modelName: body.modelName,
 				streaming: true,
+				maxTokens: -1,
 				callbackManager: CallbackManager.fromHandlers({
 					handleLLMNewToken: async (token: string) => {
 						controller.enqueue(token);

@@ -57,7 +57,6 @@
 			newMessage = '';
 		} else if (prompt) {
 			let text = prompt.toString();
-			if ($currentContext !== '') text += `\nContext:\n"${$currentContext}"`;
 			chatHistory = [...chatHistory, { text, role: 'human', promptType: prompt.type.key }];
 		}
 
