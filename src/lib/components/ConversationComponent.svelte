@@ -93,16 +93,16 @@
 		}
 	};
 
-	const getModelName = (key: string) => {
-		switch (key) {
-			case 'gpt-3.5-turbo':
-				return 'Chat-GPT';
-			case 'gpt-4':
-				return 'GPT-4';
-			default:
-				return 'Unknown';
-		}
-	};
+	// const getModelName = (key: string) => {
+	// 	switch (key) {
+	// 		case 'gpt-3.5-turbo':
+	// 			return 'Chat-GPT';
+	// 		case 'gpt-4':
+	// 			return 'GPT-4';
+	// 		default:
+	// 			return 'Unknown';
+	// 	}
+	// };
 
 	let div: any;
 	let autoscroll = false;
@@ -159,7 +159,7 @@
 							src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
 							width="w-8"
 						/>
-						<p class="font-bold">{getModelName($openAISettings.model)}</p>
+						<p class="font-bold">ChatBMI</p>
 					</div>
 					<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 				</header>
@@ -198,7 +198,7 @@
 						src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/2048px-ChatGPT_logo.svg.png"
 						width="w-8"
 					/>
-					<p class="font-bold">{getModelName($openAISettings.model)}</p>
+					<p class="font-bold">ChatBMI</p>
 				</div>
 				<small class="opacity-50">{new Date().toLocaleTimeString()}</small>
 			</header>

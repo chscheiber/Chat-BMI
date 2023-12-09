@@ -3,9 +3,8 @@ import type { PromptTypeKey } from '$lib';
 import type { Message } from '$lib/models/prompts/conversation.model';
 import { supabase } from '$lib/supabase';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { CallbackManager } from 'langchain/callbacks';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from 'langchain/schema';
+import OpenAI from 'openai';
+import type { Stream } from 'openai/streaming';
 
 export type ConversationMessageBody = {
 	conversationId: number;
@@ -31,54 +30,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	return waitFullResponse(body, key);
 };
 
-const streamResponse = async (body: ConversationMessageBody, key: string) => {
-	const readableStream = new ReadableStream({
-		async start(controller) {
-			const chat = new ChatOpenAI({
-				openAIApiKey: key,
-				modelName: body.modelName,
-				streaming: true,
-				maxTokens: -1,
-				callbackManager: CallbackManager.fromHandlers({
-					handleLLMNewToken: async (token: string) => {
-						controller.enqueue(token);
-					},
-					handleLLMEnd: async () => {
-						try {
-							controller.close();
-						} catch {
-							// ignore
-						}
-					}
-				})
-			});
-			await callChain(body.messages, chat);
-		}
+const callLLM = async (body: ConversationMessageBody, key: string, stream = true) => {
+	const openai = new OpenAI({
+		apiKey: key
 	});
 
-	// Create and return a response of the readable stream
-	return new Response(readableStream, {
-		headers: { 'Content-Type': 'text/plain' }
-	});
-};
-
-const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
-	const chat = new ChatOpenAI({
-		openAIApiKey: key,
-		modelName: body.modelName,
-		streaming: false,
-		maxTokens: -1
-	});
-
-	const response = await callChain(body.messages, chat);
-	// return text(response.content, { status: 200 });
-	return new Response(response.content, {
-		headers: { 'Content-Type': 'text/plain' }
-	});
-};
-
-const callChain = async (messages: Message[], chat: ChatOpenAI) => {
-	const humanMessages = messages.filter((message) => message.role === 'human');
+	const humanMessages = body.messages.filter((message) => message.role === 'human');
 	const promptType = humanMessages[humanMessages.length - 1].promptType as PromptTypeKey;
 
 	const { data, error: err } = await supabase
@@ -90,13 +47,59 @@ const callChain = async (messages: Message[], chat: ChatOpenAI) => {
 	if (err) throw error(500, err?.message);
 	if (!data?.system_prompt) throw error(500, 'No system prompt found');
 
-	const requestMessages: BaseMessage[] = [
-		new SystemMessage(data.system_prompt),
-		...messages.map((message) =>
-			message.role === 'human' ? new HumanMessage(message.text) : new AIMessage(message.text)
-		)
-	];
+	const mapMessage = (message: Message): { role: Role; content: string } => ({
+		role: message.role === 'human' ? 'user' : 'assistant',
+		content: message.text
+	});
+	const messages: { role: Role; content: string }[] = body.messages.map((message) =>
+		mapMessage(message)
+	);
 
-	const chainCall = await chat.call(requestMessages);
-	return chainCall;
+	messages.unshift({ role: 'system', content: data.system_prompt });
+
+	const result = openai.chat.completions.create({
+		model: body.modelName,
+		messages,
+		stream
+	});
+	return result;
 };
+
+const waitFullResponse = async (body: ConversationMessageBody, key: string) => {
+	const result = (await callLLM(body, key, false)) as OpenAI.Chat.Completions.ChatCompletion;
+
+	const text = result.choices[0]?.message.content || '';
+
+	return new Response(text, {
+		headers: { 'Content-Type': 'text/plain' }
+	});
+};
+
+const streamResponse = async (body: ConversationMessageBody, key: string) => {
+	const readableStream = new ReadableStream({
+		async start(controller) {
+			const stream = (await callLLM(
+				body,
+				key,
+				true
+			)) as Stream<OpenAI.Chat.Completions.ChatCompletionChunk>;
+
+			for await (const chunk of stream) {
+				controller.enqueue(chunk.choices[0]?.delta?.content || '');
+			}
+
+			try {
+				controller.close();
+			} catch {
+				// ignore
+			}
+		}
+	});
+
+	// Create and return a response of the readable stream
+	return new Response(readableStream, {
+		headers: { 'Content-Type': 'text/plain' }
+	});
+};
+
+type Role = 'user' | 'system' | 'assistant';
