@@ -7,7 +7,6 @@ export const load = (async ({ params, parent }) => {
 	if (params.prompt_id === 'new') {
 		return { prompt: null, params };
 	}
-
 	const { userId, teamId } = await parent();
 	let query = supabase
 		.from('prompts')

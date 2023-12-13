@@ -45,7 +45,7 @@ export class PromptFactory {
 	static createPrompt(type: PromptTypeKey | PromptTypeKey, data?: PromptData): Prompt {
 		if (!PROMPT_TYPES.find((promptType) => '' + promptType.key === type))
 			throw new Error(`Prompt type ${type} does not exist.`);
-
+		console.log(data);
 		if (!data) {
 			data = {
 				id: 0,
@@ -63,7 +63,9 @@ export class PromptFactory {
 				user_id: null,
 				fts: null,
 				team_id: '',
-				visibility: 'private'
+				visibility: 'private',
+				scenario: null,
+				persona: null
 			};
 		}
 

@@ -1,4 +1,4 @@
-import { ROUTES, type AdditionalPromptElements } from '$lib';
+import { ROUTES } from '$lib';
 import { supabase } from '$lib/supabase';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -14,7 +14,6 @@ export const actions = {
 			'reasoning',
 			'referencing',
 			'visibility',
-			'db_queries',
 			'type',
 			'userId',
 			'teamId'
@@ -29,7 +28,6 @@ export const actions = {
 			reasoning: null,
 			referencing: null,
 			visibility: null,
-			db_queries: null,
 			type: null,
 			userId: null,
 			teamId: null
@@ -37,6 +35,7 @@ export const actions = {
 		fields.forEach((field) => {
 			values[field] = formData.get(field);
 		});
+		console.log(values);
 		if (!values.name) return fail(422, { error: 'Name required' });
 		if (!values.type) return fail(422, { error: 'Prompt type required' });
 		if (!values.signifier) return fail(422, { error: 'Prompt required' });
@@ -45,8 +44,7 @@ export const actions = {
 			return fail(422, { error: 'User ID required. Please reload the app.' });
 		if (!values.teamId?.valueOf())
 			return fail(422, { error: 'Team ID required. Please reload the app.' });
-		console.log(values);
-		console.log(values.userId?.valueOf());
+
 		const tempValues: { scenarioId?: number; personaId?: number } = {};
 		if (values.scenario) {
 			const { data: scenario, error: e } = await supabase
@@ -70,11 +68,6 @@ export const actions = {
 			else return fail(422, { error: 'Persona could not be created.' });
 		}
 
-		const elements: AdditionalPromptElements = {};
-		elements.reasoning = values.reasoning?.valueOf() === 'on';
-		elements.referencing = values.referencing?.valueOf() === 'on';
-		// elements.db_queries = values.db_queries?.valueOf();
-
 		const { data, error } = await supabase
 			.from('prompts')
 			.insert({
@@ -83,7 +76,8 @@ export const actions = {
 				signifier: values.signifier.toString(),
 				type: values.type.toString(),
 				created_at: new Date().toISOString(),
-				elements,
+				reasoning: values.reasoning?.valueOf() === 'on',
+				referencing: values.referencing?.valueOf() === 'on',
 				scenario_id: tempValues.scenarioId,
 				persona_id: tempValues.personaId,
 				user_id: values.userId.toString(),
@@ -97,51 +91,3 @@ export const actions = {
 		throw redirect(303, `${ROUTES.PROMPTS}/${data.type}/${data.id}`);
 	}
 };
-
-/*
-const tempValues: { scenarioId?: number; personaId?: number } = {};
-
-	if (prompt.scenario) {
-		const { data } = await supabase
-			.from('scenarios')
-			.insert({ value: prompt.scenario })
-			.select()
-			.single();
-		if (data) tempValues.scenarioId = data.id;
-	}
-
-	if (prompt.persona) {
-		const { data } = await supabase
-			.from('personas')
-			.insert({ value: prompt.persona })
-			.select()
-			.single();
-		if (data) tempValues.personaId = data.id;
-	}
-
-	const elements: AdditionalPromptElements = {};
-
-	elements.reasoning = prompt.reasoning;
-	elements.referencing = prompt.referencing;
-	elements.db_queries = prompt.db_queries;
-
-	const { data, error } = await supabase
-		.from('prompts')
-		.insert({
-			name: prompt.name,
-			description: prompt.description,
-			signifier: prompt.signifier,
-			type: prompt.type.key,
-			created_at: new Date().toISOString(),
-			llm_model_name: prompt.llmModelName,
-			output_format: prompt.outputFormat,
-			elements,
-			scenario_id: tempValues.scenarioId,
-			persona_id: tempValues.personaId,
-			user_id: prompt.userId,
-			team_id: prompt.teamId,
-			visibility: prompt.visibility
-		})
-		.select()
-		.single();
-*/

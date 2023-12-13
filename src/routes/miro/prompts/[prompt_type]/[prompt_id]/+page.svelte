@@ -30,8 +30,6 @@
 	let locked = false;
 </script>
 
-<!-- <BackNav heading={prompt.name ?? 'New Prompt'} /> -->
-
 <Stepper
 	buttonCompleteLabel="Run Prompt"
 	buttonNext="variant-filled-primary"
@@ -59,9 +57,9 @@
 		<form
 			bind:this={htmlForm}
 			method="post"
+			class="gap-y-4 flex-col flex"
 			use:enhance={() => {
 				loading.set(true);
-
 				return async ({ update }) => {
 					await update();
 					loading.set(false);
@@ -71,17 +69,8 @@
 			<PromptPreview bind:prompt />
 		</form>
 	</Step>
-	{#if prompt.type.dbQueriesSelectable && false}
-		<Step>
-			<svelte:fragment slot="header">DB Queries</svelte:fragment>
-			<p>Add or edit your database queries.</p>
-			<p>Leave blank if you dont want any database knowledge added.</p>
-		</Step>
-	{/if}
-	{#if prompt.type.contextSelectable}
-		<Step>
-			<svelte:fragment slot="header">Select Context</svelte:fragment>
-			<Context bind:prompt />
-		</Step>
-	{/if}
+	<Step>
+		<svelte:fragment slot="header">Select Context</svelte:fragment>
+		<Context bind:prompt />
+	</Step>
 </Stepper>

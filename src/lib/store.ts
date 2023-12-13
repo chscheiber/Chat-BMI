@@ -4,6 +4,7 @@ import { localStorageStore } from '@skeletonlabs/skeleton';
 import { writable, type Writable } from 'svelte/store';
 import type { MiroSession } from '../routes/miro/types';
 import type { Conversation } from './models/prompts/conversation.model';
+import { PUBLIC_DEFAULT_LLM_MODEL } from '$env/static/public';
 
 function createCurrentPrompts() {
 	const initialPrompts: Prompt[] = [];
@@ -32,7 +33,7 @@ export const loading = writable<boolean>(false);
 
 export const openAISettings: Writable<LlmSettings> = localStorageStore('openAiSettings', {
 	key: '',
-	model: 'gpt-4',
+	model: PUBLIC_DEFAULT_LLM_MODEL ?? 'gpt-4',
 	streaming: true
 });
 

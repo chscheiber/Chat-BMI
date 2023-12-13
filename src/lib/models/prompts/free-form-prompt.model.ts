@@ -1,29 +1,25 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
-import { SYSTEM_PROMPTS } from './system-prompts.helper';
+import type { PromptData, PromptType } from './prompt-types';
 
 export class FreeFormPrompt extends Prompt {
 	public type = FREE_FORM_PROMPT_TYPE;
-	public dbQueries?: string[];
-	public reasoning?: boolean;
-	public referencing?: boolean;
-	public scenario?: string;
-	public persona?: string;
+	public reasoning = false;
+	public referencing = false;
+	public scenario = '';
+	public persona = '';
 
 	constructor(data: PromptData) {
 		super(data);
-
-		if (!data.elements) return;
-
-		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
-		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
-		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
-		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
+		this.reasoning = data.reasoning ?? false;
+		this.referencing = data.referencing ?? false;
+		this.scenario = data.scenario?.value ?? '';
+		this.persona = data.persona?.value ?? '';
 	}
 
 	public toString() {
 		return this.generateString({
 			reasoning: this.reasoning,
+			referencing: this.referencing,
 			persona: this.persona,
 			scenario: this.scenario
 		});
@@ -33,8 +29,5 @@ export class FreeFormPrompt extends Prompt {
 export const FREE_FORM_PROMPT_TYPE: PromptType = {
 	name: 'Free Form Prompt',
 	key: 'freeForm',
-	contextSelectable: true,
-	dbQueriesSelectable: true,
-	description: 'This Prompt allows you to use all elements as you wish.',
-	systemPrompt: SYSTEM_PROMPTS.freeForm
+	description: 'This Prompt allows you to use all elements as you wish.'
 };

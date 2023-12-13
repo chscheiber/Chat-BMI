@@ -74,6 +74,7 @@ export interface Database {
           {
             foreignKeyName: "conversations_collection_fkey"
             columns: ["collection"]
+            isOneToOne: false
             referencedRelation: "collections"
             referencedColumns: ["id"]
           }
@@ -138,12 +139,14 @@ export interface Database {
           {
             foreignKeyName: "prompt_collection_mapping_collection_fkey"
             columns: ["collection"]
+            isOneToOne: false
             referencedRelation: "collections"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "prompt_collection_mapping_prompt_fkey"
             columns: ["prompt"]
+            isOneToOne: false
             referencedRelation: "prompts"
             referencedColumns: ["id"]
           }
@@ -179,6 +182,8 @@ export interface Database {
           output_format: string | null
           persona_id: number | null
           private: boolean
+          reasoning: boolean | null
+          referencing: boolean | null
           scenario_id: number | null
           signifier: string
           team_id: string | null
@@ -197,6 +202,8 @@ export interface Database {
           output_format?: string | null
           persona_id?: number | null
           private?: boolean
+          reasoning?: boolean | null
+          referencing?: boolean | null
           scenario_id?: number | null
           signifier: string
           team_id?: string | null
@@ -215,6 +222,8 @@ export interface Database {
           output_format?: string | null
           persona_id?: number | null
           private?: boolean
+          reasoning?: boolean | null
+          referencing?: boolean | null
           scenario_id?: number | null
           signifier?: string
           team_id?: string | null
@@ -226,14 +235,23 @@ export interface Database {
           {
             foreignKeyName: "prompts_persona_id_fkey"
             columns: ["persona_id"]
+            isOneToOne: false
             referencedRelation: "personas"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "prompts_scenario_id_fkey"
             columns: ["scenario_id"]
+            isOneToOne: false
             referencedRelation: "scenarios"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompts_type_fkey"
+            columns: ["type"]
+            isOneToOne: false
+            referencedRelation: "prompt_types"
+            referencedColumns: ["key"]
           }
         ]
       }
@@ -311,6 +329,12 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      hnswhandler: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
       ivfflathandler: {
         Args: {
           "": unknown
@@ -375,4 +399,84 @@ export interface Database {
     }
   }
 }
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never
 
