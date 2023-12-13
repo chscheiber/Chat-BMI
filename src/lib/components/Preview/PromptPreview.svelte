@@ -2,11 +2,10 @@
 	import { PUBLIC_MIRO_ADMIN_ID } from '$env/static/public';
 	import type { Prompt } from '$lib/models/prompts';
 	import { miroSession } from '$lib/store';
-	import DesignPreview from './DesignPreview.svelte';
-	import EvaluationPreview from './EvaluationPreview.svelte';
-	import FreeFormPreview from './FreeFormPreview.svelte';
+	import { SlideToggle } from '@skeletonlabs/skeleton';
 
 	export let prompt: Prompt;
+	console.log('PromptPreview', prompt);
 </script>
 
 {#if prompt.promptId}
@@ -49,15 +48,54 @@
 	/>
 </label>
 
-{#if prompt.type.key === 'freeForm'}
-	<FreeFormPreview bind:prompt />
-{:else if prompt.type.key === 'design'}
-	<DesignPreview bind:prompt />
-{:else if prompt.type.key === 'evaluation'}
-	<EvaluationPreview bind:prompt />
+{#if 'scenario' in prompt}
+	<label class="label">
+		<span>Imagine the following scenario...</span>
+		<textarea
+			class="textarea"
+			placeholder="Describe a scenario you want the LLM to act in."
+			name="scenario"
+			rows="4"
+			bind:value={prompt.scenario}
+		/>
+	</label>
+{/if}
+{#if 'persona' in prompt}
+	<label class="label">
+		<span>Act as...</span>
+		<textarea
+			class="textarea"
+			placeholder="Describe a persona you want the LLM to immidate."
+			name="persona"
+			rows="4"
+			bind:value={prompt.persona}
+		/>
+	</label>
+{/if}
+{#if 'reasoning' in prompt && typeof prompt.reasoning === 'boolean'}
+	<div class="flex">
+		<SlideToggle
+			name="reasoning"
+			active="bg-primary-500"
+			bind:checked={prompt.reasoning}
+			disabled={!['freeForm', 'design'].includes(prompt.type.key)}
+			>Let the model add reasoning</SlideToggle
+		>
+	</div>
 {/if}
 
-<div class="flex items-end gap-x-4 pb-4">
+{#if 'referencing' in prompt && typeof prompt.referencing === 'boolean'}
+	<div class="flex">
+		<SlideToggle
+			name="referencing"
+			active="bg-primary-500"
+			bind:checked={prompt.referencing}
+			disabled={prompt.type.key !== 'freeForm'}>Include references</SlideToggle
+		>
+	</div>
+{/if}
+
+<div class="flex justify-between items-end gap-x-4 pb-4">
 	<label class="label">
 		<span>Visibility</span>
 		<select

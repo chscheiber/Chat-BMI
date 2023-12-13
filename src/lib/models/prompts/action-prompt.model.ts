@@ -1,20 +1,12 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
-import { SYSTEM_PROMPTS } from './system-prompts.helper';
+import type { PromptData, PromptType } from './prompt-types';
 
 export class ActionPrompt extends Prompt {
 	public type = ACTION_PROMPT_TYPE;
-	public dbQueries?: string[];
-	public reasoning?: boolean;
+	public reasoning = true;
 
 	constructor(data: PromptData) {
 		super(data);
-
-		if (!data.elements) return;
-
-		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
-		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
-		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
 	}
 
 	public toString(): string {
@@ -25,8 +17,5 @@ export class ActionPrompt extends Prompt {
 export const ACTION_PROMPT_TYPE: PromptType = {
 	name: 'Action Prompt',
 	key: 'action',
-	contextSelectable: true,
-	dbQueriesSelectable: true,
-	description: 'These Prompts allow you to create actionable strategies.',
-	systemPrompt: SYSTEM_PROMPTS.action
+	description: 'These Prompts allow you to create actionable strategies.'
 };

@@ -1,34 +1,29 @@
 import { Prompt } from './prompt.model';
-import type { PromptData, AdditionalPromptElements, PromptType } from './prompt-types';
-import { SYSTEM_PROMPTS } from './system-prompts.helper';
+import type { PromptData, PromptType } from './prompt-types';
 
 export class EvaluationPrompt extends Prompt {
 	public type = EVALUATION_PROMPT_TYPE;
-	public dbQueries?: string[];
-	public reasoning?: boolean;
-	public referencing?: boolean;
+	public reasoning = true;
+	public scenario = '';
+	public persona = '';
 
 	constructor(data: PromptData) {
 		super(data);
-
-		if (!data.elements) return;
-
-		const parsedElements = data.elements?.valueOf() as AdditionalPromptElements;
-		if (parsedElements.db_queries) this.dbQueries = parsedElements.db_queries;
-		if (parsedElements.reasoning) this.reasoning = parsedElements.reasoning;
-		if (parsedElements.referencing) this.referencing = parsedElements.referencing;
+		if (data.persona?.value) this.persona = data.persona.value;
+		if (data.scenario?.value) this.scenario = data.scenario.value;
 	}
 
 	public toString() {
-		return this.generateString({ reasoning: this.reasoning });
+		return this.generateString({
+			reasoning: this.reasoning,
+			persona: this.persona,
+			scenario: this.scenario
+		});
 	}
 }
 
 export const EVALUATION_PROMPT_TYPE: PromptType = {
 	name: 'Evaluation Prompt',
 	key: 'evaluation',
-	contextSelectable: true,
-	dbQueriesSelectable: true,
-	description: 'These Prompts allow you to evaluate Business Models and their elements.',
-	systemPrompt: SYSTEM_PROMPTS.evaluation
+	description: 'These Prompts allow you to evaluate Business Models and their elements.'
 };
